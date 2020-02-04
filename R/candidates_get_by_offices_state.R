@@ -7,6 +7,12 @@ clean_xml <- function(x) {
 candidates_get_by_office_state <- function(state_ids, office_ids) {
   req <- "Candidates.getByOfficeState?"
   
+  state_ids %<>% 
+    stringr::str_c(collapse = "&")
+  
+  office_ids %<>% 
+    stringr::str_c(collapse = "&")
+  
   query <- 
     dev.glue(
       "&stateId={state_ids}&officeId={office_ids}"
@@ -17,10 +23,14 @@ candidates_get_by_office_state <- function(state_ids, office_ids) {
   
   raw <- request(url)
   
-  df <- 
-    raw %>% 
-    xml2::read_xml() %>% 
-    purrr::map_dfc(clean_xml)
+  lst <- 
+    raw$candidateList$candidate
+  
+  # Turn each element into a tibble and rowbind them
+  lst %>% 
+    purrr::map(as_tibble) %>% 
+    bind_rows() %>% 
+    wrangle.clean_df()
 }
 
-candidates_get_by_office_state("NA", "1") %>% xml2::read_xml()
+candidates_get_by_office_state(c( "NY","NA", "CA"), c("1", "6"))

@@ -4,7 +4,7 @@ BASE_URL <- "http://api.votesmart.org/"
 construct_url <- function(req, query) {
   key <- get_key()
   
-  dev.glue("{BASE_URL}{req}key={key}{query}")
+  dev.glue("{BASE_URL}{req}key={key}{query}&o=JSON")
 }
 
 request <- function(url, verbose = FALSE) {
@@ -21,5 +21,5 @@ request <- function(url, verbose = FALSE) {
   
   status <- httr::http_status(resp)
 
-  httr::content(resp, as = "text")
+  httr::content(resp)
 }
