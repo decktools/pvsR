@@ -1,17 +1,8 @@
 
-clean_xml <- function(x) {
-  stringr::str_extract_all(x, ">.*<") %>% 
-    stringr::str_remove_all("[><\\n]")
-}
-
-candidates_get_by_office_state <- function(state_ids, office_ids) {
+candidates_get_by_office_state <- function(state_id, office_id) {
   req <- "Candidates.getByOfficeState?"
   
-  state_ids %<>% 
-    stringr::str_c(collapse = "&")
   
-  office_ids %<>% 
-    stringr::str_c(collapse = "&")
   
   query <- 
     dev.glue(
