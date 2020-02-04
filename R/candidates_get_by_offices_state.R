@@ -14,16 +14,16 @@
 #' }
 candidates_get_by_office_state <- function(state_ids = NA,
                                            office_ids, 
-                                           election_years = "", 
-                                           verbose = FALSE) {
+                                           election_years = lubridate::year(lubridate::today()), 
+                                           verbose = TRUE) {
   req <- "Candidates.getByOfficeState?"
   
   state_ids %<>% 
-    purrr::as_vector()
+    as_char_vec()
   office_ids %<>% 
-    purrr::as_vector()
+    as_char_vec()
   election_years %<>% 
-    purrr::as_vector()
+    as_char_vec()
   
   query_df <- 
     expand.grid(
@@ -44,6 +44,7 @@ candidates_get_by_office_state <- function(state_ids = NA,
     q <- query_df$query[i]
     state_id <- query_df$state_id[i]
     office_id <- query_df$office_id[i]
+    election_year <- query_df$election_year[i]
     
     url <- 
       construct_url(req, q)
@@ -53,47 +54,50 @@ candidates_get_by_office_state <- function(state_ids = NA,
     lst <- 
       raw$candidateList$candidate
     
-    if (is.null(lst) && verbose) {
-      dev.glue_message(
-        "No results found for state_id {state_id} and office_id {office_id}."
-      )
+    if (is.null(lst)) {
+      if (verbose) {
+        dev.glue_message(
+          "No results found for {{state_id: {state_id}, office_id: {office_id}, election_year: {election_year}}}."
+        )
+      }
       
       # Other cols will be NA
       this <- 
         tibble(
           office_id = office_id,
-          state_id = state_id
+          state_id = state_id,
+          election_year = election_year
         )
     } else {
       # Turn each element into a tibble and rowbind them
       this <- lst %>% 
         purrr::map(as_tibble) %>% 
+        purrr::modify_depth(2, as.character) %>% 
         bind_rows() %>% 
         wrangle.clean_df() %>% 
         mutate(
           office_id = office_id,
-          state_id = state_id
+          state_id = state_id,
+          election_year = election_year
         ) %>% 
-        mutate_all(as.character)
+        select(
+          candidate_id,
+          first_name,
+          nick_name,
+          middle_name,
+          last_name,
+          suffix,
+          title,
+          ballot_name,
+          state_id,
+          office_id,
+          election_year,
+          everything()
+        )
     }
     
     out %<>% 
       bind_rows(this)
   }
-  out %>% 
-    select(
-      candidate_id,
-      first_name,
-      nick_name,
-      middle_name,
-      last_name,
-      suffix,
-      title,
-      ballot_name,
-      state_id,
-      office_id,
-      everything()
-    )
+  out 
 }
-
-candidates_get_by_office_state(c( "NY","NA", "CA"), c("1", "6"))

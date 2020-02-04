@@ -7,7 +7,7 @@
 candidates_get_by_office_state(
   state_ids = NA,
   office_ids,
-  election_years = "",
+  election_years = lubridate::year(lubridate::today()),
   verbose = FALSE
 )
 }
