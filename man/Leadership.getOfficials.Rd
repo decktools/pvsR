@@ -20,7 +20,7 @@ This function is a wrapper for the Leadership.getOfficials() method of the PVS A
 \examples{
 # First, make sure your personal PVS API key is saved as character string in the pvs.key variable:
 \dontrun{pvs.key <- "yourkey"}
-# get leaders by state ID and leadership ID 
+# get leaders by state ID and leadership ID
 \dontrun{officials <- Leadership.getOfficials(list("NY","FL"),list(138,140))}
 \dontrun{officials}
 }

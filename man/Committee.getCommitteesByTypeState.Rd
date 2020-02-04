@@ -26,7 +26,7 @@ This function is a wrapper for the Committee.getCommitteesByTypeState() method o
 \dontrun{committees <- Committee.getCommitteesByTypeState(typeId=list("H","S"),
 stateId=list("NY","NJ"), all=TRUE)}
 \dontrun{committees}
-# get a data frame of committees according to the exact type/state combinations 
+# get a data frame of committees according to the exact type/state combinations
 # (i.e., "H"/"NY", "S"/"NJ")
 \dontrun{committees <- Committee.getCommitteesByTypeState(typeId=list("H","S"),
 stateId=list("NY","NJ"), all=FALSE)}

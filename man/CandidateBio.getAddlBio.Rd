@@ -18,7 +18,7 @@ This function is a wrapper for the CandidateBio.getAddlBio() method of the PVS A
 \examples{
 # First, make sure your personal PVS API key is saved as character string in the pvs.key variable:
 \dontrun{pvs.key <- "yourkey"}
-# get additional biographical data on Barack Obama 
+# get additional biographical data on Barack Obama
 \dontrun{obama <- CandidateBio.getAddlBio(9490)}
 \dontrun{obama}
 # get additional biographical data on Barack Obama and Mitt Romney
@@ -26,7 +26,7 @@ This function is a wrapper for the CandidateBio.getAddlBio() method of the PVS A
 \dontrun{onr}
 }
 \references{
-http://api.votesmart.org/docs/CandidateBio.html\cr 
+http://api.votesmart.org/docs/CandidateBio.html\cr
 Use Candidates.getByOfficeState(), Candidates.getByOfficeTypeState(), Candidates.getByLastname(), Candidates.getByLevenshtein(), Candidates.getByElection(), Candidates.getByDistrict() or Candidates.getByZip() to get a list of candidate IDs.\cr
 See also: Matter U, Stutzer A (2015) pvsR: An Open Source Interface to Big Data on the American Political Sphere. PLoS ONE 10(7): e0130501. doi: 10.1371/journal.pone.0130501
 }

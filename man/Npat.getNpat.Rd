@@ -24,7 +24,7 @@ This function is a wrapper for the Npat.getNpat() method of the PVS API Npat cla
 \dontrun{head(pcts$candidate)}
 }
 \references{
-http://api.votesmart.org/docs/CandidateBio.html\cr 
+http://api.votesmart.org/docs/CandidateBio.html\cr
 Use Candidates.getByOfficeState(), Candidates.getByOfficeTypeState(), Candidates.getByLastname(), Candidates.getByLevenshtein(), Candidates.getByElection(), Candidates.getByDistrict() or Candidates.getByZip() to get a list of candidate IDs.\cr
 See also: Matter U, Stutzer A (2015) pvsR: An Open Source Interface to Big Data on the American Political Sphere. PLoS ONE 10(7): e0130501. doi: 10.1371/journal.pone.0130501
 }

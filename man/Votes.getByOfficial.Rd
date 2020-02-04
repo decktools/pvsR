@@ -20,7 +20,7 @@ This function is a wrapper for the Votes.getByOfficial() method of the PVS API V
 \examples{
 # First, make sure your personal PVS API key is saved as character string in the pvs.key variable:
 \dontrun{pvs.key <- "yourkey"}
-# get additional biographical data on Barack Obama 
+# get additional biographical data on Barack Obama
 \dontrun{votes <- Votes.getByOfficial(as.list(2010:2012),9490)}
 \dontrun{votes}
 }

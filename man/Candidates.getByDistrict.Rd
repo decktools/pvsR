@@ -25,7 +25,7 @@ This function is a wrapper for the Candidates.getByDistrict() method of the PVS 
 \dontrun{district}
 }
 \references{
-http://api.votesmart.org/docs/Candidates.html\cr 
+http://api.votesmart.org/docs/Candidates.html\cr
 Use District.getByOfficeState() or District.getByZip() to get a list of district ID(s).\cr
 See also: Matter U, Stutzer A (2015) pvsR: An Open Source Interface to Big Data on the American Political Sphere. PLoS ONE 10(7): e0130501. doi: 10.1371/journal.pone.0130501
 }

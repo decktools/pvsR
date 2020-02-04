@@ -22,7 +22,7 @@ This function is a wrapper for the Votes.getBillsByOfficialYearOffice() method o
 \examples{
 # First, make sure your personal PVS API key is saved as character string in the pvs.key variable:
 \dontrun{pvs.key <- "yourkey"}
-# get a list of bills for a certain office, candidate and year 
+# get a list of bills for a certain office, candidate and year
 \dontrun{bills <- Votes.getBillsByOfficialYearOffice(list(2010,2011,2012),107800,)}
 \dontrun{bills}
 }

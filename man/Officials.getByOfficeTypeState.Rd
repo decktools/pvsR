@@ -19,10 +19,10 @@ This function is a wrapper for the Officials.getByOfficeTypeState() method of th
 }
 \examples{
 # First, make sure your personal PVS API key is saved as character string in the pvs.key variable:
-# Note that some officeTypeIds are only available on the state level or national level 
+# Note that some officeTypeIds are only available on the state level or national level
 # (e.g. "L" for State Legislature only if stateId is specified!)
 \dontrun{pvs.key <- "yourkey"}
-# get a list of officials by state and office type 
+# get a list of officials by state and office type
 \dontrun{CAlegislators <- Officials.getByOfficeTypeState(officeTypeId="L", stateId="CA")}
 \dontrun{head(CAlegislators)}
 \dontrun{suprcourt <- Officials.getByOfficeTypeState(officeTypeId="J")}

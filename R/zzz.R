@@ -1,3 +1,6 @@
+#' @import bonanza dplyr httr nnet XML
+#' @importFrom stats na.omit
+#' @importFrom utils setTxtProgressBar txtProgressBar
 
 get_key <- function() {
   Sys.getenv("VOTESMART_API_KEY")

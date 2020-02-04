@@ -27,7 +27,7 @@ This function is a wrapper for the Votes.getBill() method of the PVS API Votes c
 \dontrun{billinfo2 <- Votes.getBill(billId=list(2819,6427,6590),
 separate=c("sponsors","actions"))}
 \dontrun{billinfo2}
-# check the sponsors of the requested bill (argument of separate)... 
+# check the sponsors of the requested bill (argument of separate)...
 \dontrun{billinfo2$sponsors}
 # ... and the usual variables describing the bill (nodes not mentioned in separate)
 \dontrun{billinfo2$main}

@@ -15,7 +15,7 @@ This function is essentially a  wrapper around Local.getCounties().
 \examples{
 # First, make sure your personal PVS API key is saved as character string in the pvs.key variable:
 \dontrun{pvs.key <- "yourkey"}
-# get a list of all counties 
+# get a list of all counties
 \dontrun{counties <- getAllCounties()}
 \dontrun{head(counties)}
 }

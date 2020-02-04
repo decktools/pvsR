@@ -22,7 +22,7 @@ This function is a wrapper for the Election.getElectionByZip() method of the PVS
 \examples{
 # First, make sure your personal PVS API key is saved as character string in the pvs.key variable:
 \dontrun{pvs.key <- "yourkey"}
-# get election data by ZIP code 
+# get election data by ZIP code
 \dontrun{election <- Election.getElectionByZip(zip5=list(10001,10002), year="2012")}
 \dontrun{election}
 }

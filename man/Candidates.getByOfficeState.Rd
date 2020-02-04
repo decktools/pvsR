@@ -28,15 +28,15 @@ This function is a wrapper for the Candidates.getByOfficeState() method of the P
 \dontrun{candidates <- Candidates.getByOfficeState(stateId=list("NJ","NY"),officeId=list(6,7),
 electionYear=list(2012,2008), all=TRUE)}
 \dontrun{candidates}
-# get a data frame of candidates according to the exact state/office/electionYear combinations 
+# get a data frame of candidates according to the exact state/office/electionYear combinations
 # (i.e., "NY"/6/2012, "NJ"/7/2008)
 \dontrun{candidates <- Candidates.getByOfficeState(stateId=list("NJ","NY"),officeId=list(6,7),
  electionYear=list(2012,2008), all=FALSE)}
 \dontrun{candidates}
 }
 \references{
-http://api.votesmart.org/docs/Candidates.html\cr 
-Use State.getStateIDs() to get a list of state IDs.\cr 
+http://api.votesmart.org/docs/Candidates.html\cr
+Use State.getStateIDs() to get a list of state IDs.\cr
 See http://api.votesmart.org/docs/semi-static.html for a list of office IDs or use Office.getOfficesByType(), Office.getOfficesByLevel(), Office.getOfficesByTypeLevel() or Office.getOfficesByBranchLevel() to get a list of office ID(s).\cr
 See also: Matter U, Stutzer A (2015) pvsR: An Open Source Interface to Big Data on the American Political Sphere. PLoS ONE 10(7): e0130501. doi: 10.1371/journal.pone.0130501
 }

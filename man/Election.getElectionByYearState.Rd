@@ -20,7 +20,7 @@ This function is a wrapper for the Election.getElectionByYearState() method of t
 \examples{
 # First, make sure your personal PVS API key is saved as character string in the pvs.key variable:
 \dontrun{pvs.key <- "yourkey"}
-# get information about an election of a certain year and state 
+# get information about an election of a certain year and state
 \dontrun{election <- Election.getElectionByYearState(list("NY","FL"),2012)}
 \dontrun{election}
 }

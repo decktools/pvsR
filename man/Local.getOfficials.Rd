@@ -18,7 +18,7 @@ This function is a wrapper for the Local.getOfficials() method of the PVS API Lo
 \examples{
 # First, make sure your personal PVS API key is saved as character string in the pvs.key variable:
 \dontrun{pvs.key <- "yourkey"}
-# get a list of officials according to certain local IDs 
+# get a list of officials according to certain local IDs
 \dontrun{officials <- Local.getOfficials(list(3200,3203))}
 \dontrun{officials}
 }

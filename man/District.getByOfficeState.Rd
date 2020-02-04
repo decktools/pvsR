@@ -24,14 +24,14 @@ This function is a wrapper for the District.getByOfficeState() method of the PVS
 \examples{
 # First, make sure your personal PVS API key is saved as character string in the pvs.key variable:
 \dontrun{pvs.key <- "yourkey"}
-# get districts for certain office and state IDs 
+# get districts for certain office and state IDs
 \dontrun{districts <- District.getByOfficeState(officeId=list(8,9),stateId=list("NY","NJ"))}
 \dontrun{district}
 # get a data frame of districts according to all state/office/districtName combinations
 \dontrun{districts <- District.getByOfficeState(officeId=list(8,9),stateId=list("NY","NJ"),
  districtName=list(1,2), all=TRUE)}
 \dontrun{districts}
-# get a data frame of districts according to the exact state/office/districtName combinations 
+# get a data frame of districts according to the exact state/office/districtName combinations
 # (i.e., 8/"NY"/1, 9/"NJ"/2)
 \dontrun{districts <- District.getByOfficeState(officeId=list(8,9),stateId=list("NY","NJ"),
  districtName=list(1,2), all=FALSE)}

@@ -27,7 +27,7 @@ This function is a wrapper for the Votes.getBillsByYearState() method of the PVS
 \dontrun{bills <- Votes.getBillsByYearState(year=list(2011,2012),
 stateId=list("NY","NJ"), all=TRUE)}
 \dontrun{head(bills)}
-# get a data frame of bills according to the exact year and state combinations 
+# get a data frame of bills according to the exact year and state combinations
 # (i.e., 2011/"NY", 2012/"NJ")
 \dontrun{bills <- Votes.getBillsByYearState(year=list(2011,2012),
 stateId=list("NY","NJ"), all=FALSE)}
