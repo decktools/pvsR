@@ -1,5 +1,5 @@
 ##' Get leadership positions by state and office
-##' 
+##'
 ##' This function is a wrapper for the Leadership.getPositions() method of the PVS API Leadership class which returns leadership positions by state and office. The function sends a request with this method to the PVS API for all state and office IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Leadership.getPositions(stateId="NA", officeId=NULL)
 ##' @param stateId (optional) a character string or list of character strings with the state ID(s) (default: "NA", for national) (see references for details)
@@ -21,63 +21,56 @@
 
 
 Leadership.getPositions <-
-	function (stateId="NA", officeId=NULL) {
-		
-		if (length(officeId)==0) {
-			
-			# internal function
-			Leadership.getPositions.basic1 <- 
-				function (.stateId) {
-					
-					request <-  "Leadership.getPositions?"
-					inputs  <-  paste("&stateId=",.stateId,sep="")
-					output  <-  pvsRequest4(request,inputs)
-					output$stateId <- .stateId
-					
-					return(output)
-			}
-			
-			
-			# Main function  
-			output.list <- lapply(stateId, FUN= function (s) {
-				Leadership.getPositions.basic1(.stateId=s)
-			}
-			)
-			
-			output.list <- redlist(output.list)
-			output <- bind_rows(output.list)
+  function(stateId = "NA", officeId = NULL) {
+    if (length(officeId) == 0) {
 
-		} else {
-			
-			# internal function
-			Leadership.getPositions.basic2 <- 
-				function (.stateId, .officeId) {
-					
-					request <-  "Leadership.getPositions?"
-					inputs  <-  paste("&stateId=",.stateId, "&officeId=", .officeId, sep="")
-					output  <-  pvsRequest4(request,inputs)
-					output$stateId <- .stateId
-					output$officeId.input <- .officeId
-					return(output)
-				}
-			
-			# Main function  
-			output.list <- lapply(stateId, FUN= function (s) {
-				lapply(officeId, FUN= function (c) {
-					Leadership.getPositions.basic2( .stateId=s, .officeId=c)
-				}
-				)
-			}
-			)
-			
-			output.list <- redlist(output.list)
-			output <- bind_rows(output.list)
-			
-			# Avoids that output is missleading, because officeId is already given in request-output, but also a
-			# additionally generated (as officeId.input). Problem exists because some request-outputs might be empty
-			# and therefore only contain one "officeId" whereas the non-empty ones contain two. (see basic function)
-			output$officeId[c(as.vector(is.na(output$officeId)))] <- output$officeId.input[as.vector(is.na(output$officeId))]
-			output$officeId.input <- NULL
-		}
-		return(output)
-	}
+      # internal function
+      Leadership.getPositions.basic1 <-
+        function(.stateId) {
+          request <- "Leadership.getPositions?"
+          inputs <- paste("&stateId=", .stateId, sep = "")
+          output <- pvsRequest4(request, inputs)
+          output$stateId <- .stateId
+
+          return(output)
+        }
+
+
+      # Main function
+      output.list <- lapply(stateId, FUN = function(s) {
+        Leadership.getPositions.basic1(.stateId = s)
+      })
+
+      output.list <- redlist(output.list)
+      output <- bind_rows(output.list)
+    } else {
+
+      # internal function
+      Leadership.getPositions.basic2 <-
+        function(.stateId, .officeId) {
+          request <- "Leadership.getPositions?"
+          inputs <- paste("&stateId=", .stateId, "&officeId=", .officeId, sep = "")
+          output <- pvsRequest4(request, inputs)
+          output$stateId <- .stateId
+          output$officeId.input <- .officeId
+          return(output)
+        }
+
+      # Main function
+      output.list <- lapply(stateId, FUN = function(s) {
+        lapply(officeId, FUN = function(c) {
+          Leadership.getPositions.basic2(.stateId = s, .officeId = c)
+        })
+      })
+
+      output.list <- redlist(output.list)
+      output <- bind_rows(output.list)
+
+      # Avoids that output is missleading, because officeId is already given in request-output, but also a
+      # additionally generated (as officeId.input). Problem exists because some request-outputs might be empty
+      # and therefore only contain one "officeId" whereas the non-empty ones contain two. (see basic function)
+      output$officeId[c(as.vector(is.na(output$officeId)))] <- output$officeId.input[as.vector(is.na(output$officeId))]
+      output$officeId.input <- NULL
+    }
+    return(output)
+  }

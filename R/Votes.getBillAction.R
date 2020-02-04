@@ -1,5 +1,5 @@
 ##' Get detailed action information on a certain stage of the bill
-##' 
+##'
 ##' This function is a wrapper for the Votes.getBillAction() method of the PVS API Votes class which grabs detailed action information on a certain stage of the bill. The function sends a request with this method to the PVS API for all action IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Votes.getBillAction(actionId)
 ##' @param actionId a character string or list of character strings with the action ID(s) (see references for details)
@@ -19,35 +19,32 @@
 
 
 Votes.getBillAction <-
-	function (actionId) {
+  function(actionId) {
 
-		# internal function
-		Votes.getBillAction.basic <- 
-			function (.actionId) {
-				
-				request <-  "Votes.getBillAction?"
-				inputs  <-  paste("&actionId=",.actionId, sep="")
-				output  <-  pvsRequest(request,inputs)
-				output$actionId <- .actionId
-				
-				return(output)
-			}
+    # internal function
+    Votes.getBillAction.basic <-
+      function(.actionId) {
+        request <- "Votes.getBillAction?"
+        inputs <- paste("&actionId=", .actionId, sep = "")
+        output <- pvsRequest(request, inputs)
+        output$actionId <- .actionId
 
-		
-		# Main function  
-		output.list <- lapply(actionId, FUN= function (b) {
-			Votes.getBillAction.basic(.actionId=b)
-		}
-		)
-		
-		output.list2 <- lapply(output.list, FUN=function (x){
-			varnames <- names(x) 
-			varnames.clean <- gsub(pattern=".text", replacement="", x=varnames, fixed=TRUE)
-			names(x) <- varnames.clean
-			x
-		})
-		
-		output <- bind_rows(redlist(output.list2))
-		return(output)
-	}
+        return(output)
+      }
 
+
+    # Main function
+    output.list <- lapply(actionId, FUN = function(b) {
+      Votes.getBillAction.basic(.actionId = b)
+    })
+
+    output.list2 <- lapply(output.list, FUN = function(x) {
+      varnames <- names(x)
+      varnames.clean <- gsub(pattern = ".text", replacement = "", x = varnames, fixed = TRUE)
+      names(x) <- varnames.clean
+      x
+    })
+
+    output <- bind_rows(redlist(output.list2))
+    return(output)
+  }

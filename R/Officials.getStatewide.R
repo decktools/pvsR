@@ -1,5 +1,5 @@
 ##' Get a list of officials according to state representation
-##' 
+##'
 ##' This function is a wrapper for the Officials.getStatewide() method of the PVS API Officials class which grabs a list of officials according to the state they are representing. The function sends a request with this method to the PVS API for all state IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Officials.getStatewide(stateId="NA")
 ##' @param stateId (optional) a character string or list of character strings with the state ID(s) (default: "NA", for national) (see references for details)
@@ -19,28 +19,26 @@
 
 
 Officials.getStatewide <-
-	function (stateId="NA") {
+  function(stateId = "NA") {
 
-		# internal function
-		Officials.getStatewide.basic <- 
-			function (.stateId) {
+    # internal function
+    Officials.getStatewide.basic <-
+      function(.stateId) {
+        request <- "Officials.getStatewide?"
+        inputs <- paste("&stateId=", .stateId, sep = "")
+        output <- pvsRequest4(request, inputs)
+        output$stateId <- .stateId
 
-				request <-  "Officials.getStatewide?"
-				inputs  <-  paste("&stateId=",.stateId,sep="")
-				output  <-  pvsRequest4(request,inputs)
-				output$stateId <- .stateId
-				
-				return(output)
-		}
+        return(output)
+      }
 
-		# Main function  
-		output.list <- lapply(stateId, FUN= function (s) {
-			Officials.getStatewide.basic(.stateId=s)
-		}
-		)
+    # Main function
+    output.list <- lapply(stateId, FUN = function(s) {
+      Officials.getStatewide.basic(.stateId = s)
+    })
 
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
 
-		return(output)
-	}
+    return(output)
+  }

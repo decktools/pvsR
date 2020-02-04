@@ -1,5 +1,5 @@
 ##' Get a list of bills according to sponsor(candidate) and year
-##' 
+##'
 ##' This function is a wrapper for the Votes.getBillsBySponsorYear() method of the PVS API Votes class which grabs a list of bills that fit the sponsor's candidateId and year. The function sends a request with this method to the PVS API for all candidate IDs and years given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Votes.getBillsBySponsorYear(year, candidateId)
 ##' @param year a character string or list of character strings with the year(s)
@@ -20,31 +20,28 @@
 
 
 Votes.getBillsBySponsorYear <-
-	function (year, candidateId) {
+  function(year, candidateId) {
 
-		# internal function
-		Votes.getBillsBySponsorYear.basic <- 
-			function (.year, .candidateId) {
-				
-				request <-  "Votes.getBillsBySponsorYear?"
-				inputs  <-  paste("&year=",.year,"&candidateId=",.candidateId,sep="")
-				output  <-  pvsRequest(request,inputs)
-				output$year <- .year
-				output$candidateId <- .candidateId
-				
-				return(output)
-			}
+    # internal function
+    Votes.getBillsBySponsorYear.basic <-
+      function(.year, .candidateId) {
+        request <- "Votes.getBillsBySponsorYear?"
+        inputs <- paste("&year=", .year, "&candidateId=", .candidateId, sep = "")
+        output <- pvsRequest(request, inputs)
+        output$year <- .year
+        output$candidateId <- .candidateId
 
-		# Main function  
-		output.list <- lapply(year, FUN= function (y) {
-			lapply(candidateId, FUN= function (s) {
-				Votes.getBillsBySponsorYear.basic(.year=y, .candidateId=s)
-			}
-			)
-		}
-		)
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
+        return(output)
+      }
 
-		return(output)
-	}
+    # Main function
+    output.list <- lapply(year, FUN = function(y) {
+      lapply(candidateId, FUN = function(s) {
+        Votes.getBillsBySponsorYear.basic(.year = y, .candidateId = s)
+      })
+    })
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

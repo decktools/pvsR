@@ -1,5 +1,5 @@
 ##' Get offices tracked according to level
-##' 
+##'
 ##' This function is a wrapper for the Office.getOfficesByLevel() method of the PVS API Office class which grabs a list of offices Project Vote Smart keeps track of according to their level. The function sends a request with this method to the PVS API for all level IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Office.getOfficesByLevel(levelId)
 ##' @param levelId a character string or list of character strings with the level ID(s) (see references for details)
@@ -20,27 +20,25 @@
 
 
 Office.getOfficesByLevel <-
-	function (levelId) {
+  function(levelId) {
 
-		# internal function
-		Office.getOfficesByLevel.basic <- 
-			function (.levelId) {
-			
-			request <-  "Office.getOfficesByLevel?"
-			inputs  <-  paste("&levelId=",.levelId,sep="")
-			output  <-  pvsRequest4(request,inputs)
-			
-			return(output)
-		}
+    # internal function
+    Office.getOfficesByLevel.basic <-
+      function(.levelId) {
+        request <- "Office.getOfficesByLevel?"
+        inputs <- paste("&levelId=", .levelId, sep = "")
+        output <- pvsRequest4(request, inputs)
 
-		# Main function  
-		output.list <- lapply(levelId, FUN= function (s) {
-			Office.getOfficesByLevel.basic(.levelId=s)
-		}
-		)
+        return(output)
+      }
 
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
+    # Main function
+    output.list <- lapply(levelId, FUN = function(s) {
+      Office.getOfficesByLevel.basic(.levelId = s)
+    })
 
-		return(output)
-	}
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

@@ -1,5 +1,5 @@
 ##' Get a list of officials according to office type and state
-##' 
+##'
 ##' This function is a wrapper for the Officials.getByOfficeTypeState() method of the PVS API Officials class which grabs a list of officials according to the office type and state they represent. The function sends a request with this method to the PVS API for all state and office type IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Officials.getByOfficeTypeState(stateId="NA", officeTypeId)
 ##' @param stateId (optional) a character string or list of character strings with the state ID(s) (default: "NA", for national) (see references for details)
@@ -12,10 +12,10 @@
 ##' @author Ulrich Matter <ulrich.matter-at-unibas.ch>
 ##' @examples
 ##' # First, make sure your personal PVS API key is saved as character string in the pvs.key variable:
-##' # Note that some officeTypeIds are only available on the state level or national level 
+##' # Note that some officeTypeIds are only available on the state level or national level
 ##' # (e.g. "L" for State Legislature only if stateId is specified!)
 ##' \dontrun{pvs.key <- "yourkey"}
-##' # get a list of officials by state and office type 
+##' # get a list of officials by state and office type
 ##' \dontrun{CAlegislators <- Officials.getByOfficeTypeState(officeTypeId="L", stateId="CA")}
 ##' \dontrun{head(CAlegislators)}
 ##' \dontrun{suprcourt <- Officials.getByOfficeTypeState(officeTypeId="J")}
@@ -25,31 +25,29 @@
 
 
 Officials.getByOfficeTypeState <-
-	function (stateId="NA", officeTypeId) {
+  function(stateId = "NA", officeTypeId) {
 
-		# internal function
-		Officials.getByOfficeTypeState.basic <- 
-			function (.stateId, .officeTypeId) {
-				request <-  "Officials.getByOfficeTypeState?"
-				inputs  <-  paste("&stateId=",.stateId,"&officeTypeId=",.officeTypeId,sep="")
-				output  <-  pvsRequest4(request,inputs)
-				output$stateId <- .stateId
-				output$officeTypeId <- .officeTypeId
-				
-				return(output)
-				}
+    # internal function
+    Officials.getByOfficeTypeState.basic <-
+      function(.stateId, .officeTypeId) {
+        request <- "Officials.getByOfficeTypeState?"
+        inputs <- paste("&stateId=", .stateId, "&officeTypeId=", .officeTypeId, sep = "")
+        output <- pvsRequest4(request, inputs)
+        output$stateId <- .stateId
+        output$officeTypeId <- .officeTypeId
 
-		# Main function  
-		output.list <- lapply(stateId, FUN= function (y) {
-			lapply(officeTypeId, FUN= function (s) {
-				Officials.getByOfficeTypeState.basic(.stateId=y, .officeTypeId=s)
-			}
-			)
-		}
-		)
-		
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
+        return(output)
+      }
 
-		return(output)
-		}
+    # Main function
+    output.list <- lapply(stateId, FUN = function(y) {
+      lapply(officeTypeId, FUN = function(s) {
+        Officials.getByOfficeTypeState.basic(.stateId = y, .officeTypeId = s)
+      })
+    })
+
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

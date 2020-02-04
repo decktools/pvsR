@@ -1,5 +1,5 @@
 ##' Get a list of officials according to office
-##' 
+##'
 ##' This function is a wrapper for the Officials.getByOfficeState() method of the PVS API Officials class which grabs a list of officials according to office. The function sends a request with this method to the PVS API for all office IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Officials.getByOfficeState(stateId="NA", officeId)
 ##' @param stateId a character string or list of character strings with the state ID(s) (default is "NA", for national) (see references for details)
@@ -18,34 +18,30 @@
 ##' @export
 
 Officials.getByOfficeState <-
-	function (stateId="NA", officeId) {
+  function(stateId = "NA", officeId) {
 
-		# internal function
-		Officials.getByOfficeState.basic <- 
-			function (.stateId, .officeId) {
-			
-			request <-  "Officials.getByOfficeState?"
-			inputs  <-  paste("&stateId=",.stateId,"&officeId=",.officeId,sep="")
-			output  <-  pvsRequest4(request,inputs)
-			output$stateId <- .stateId
-			output$officeId <- .officeId
-			
-			return(output)
-			}
-		
-		
-		# Main function  
-		output.list <- lapply(stateId, FUN= function (y) {
-			lapply(officeId, FUN= function (s) {
-				Officials.getByOfficeState.basic(.stateId=y, .officeId=s)
-			}
-			)
-		}
-		)
-		
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
+    # internal function
+    Officials.getByOfficeState.basic <-
+      function(.stateId, .officeId) {
+        request <- "Officials.getByOfficeState?"
+        inputs <- paste("&stateId=", .stateId, "&officeId=", .officeId, sep = "")
+        output <- pvsRequest4(request, inputs)
+        output$stateId <- .stateId
+        output$officeId <- .officeId
 
-		return(output)
-	}
+        return(output)
+      }
 
+
+    # Main function
+    output.list <- lapply(stateId, FUN = function(y) {
+      lapply(officeId, FUN = function(s) {
+        Officials.getByOfficeState.basic(.stateId = y, .officeId = s)
+      })
+    })
+
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

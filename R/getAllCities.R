@@ -1,5 +1,5 @@
 ##' Get basic data on all cities
-##' 
+##'
 ##' This function is essentially a  wrapper around Local.getCities().
 ##' @usage getAllCities()
 ##' @return A data frame with a row for each city and columns with the following variables describing the city:\cr cities.city*.localId,\cr cities.city*.name,\cr cities.city*.url.
@@ -19,9 +19,8 @@
 
 getAllCities <-
   function() {
-    
     states <- State.getStateIDs()
-    #nocounties <- c("NA", "PR", "GU", "AS", "VI", "DC")
-    #states <- states[!(states$stateId %in% nocounties),]
-    Local.getCities(states$stateId)  
+    # nocounties <- c("NA", "PR", "GU", "AS", "VI", "DC")
+    # states <- states[!(states$stateId %in% nocounties),]
+    Local.getCities(states$stateId)
   }

@@ -1,5 +1,5 @@
 ##' Get officials for a locality
-##' 
+##'
 ##' This function is a wrapper for the Local.getOfficials() method of the PVS API Local class which returns a list of officials in a locality. The function sends a request with this method to the PVS API for all local IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Local.getOfficials(localId)
 ##' @param localId a character string or list of character strings with the local ID(s) (see references for details)
@@ -11,39 +11,35 @@
 ##' @examples
 ##' # First, make sure your personal PVS API key is saved as character string in the pvs.key variable:
 ##' \dontrun{pvs.key <- "yourkey"}
-##' # get a list of officials according to certain local IDs 
+##' # get a list of officials according to certain local IDs
 ##' \dontrun{officials <- Local.getOfficials(list(3200,3203))}
 ##' \dontrun{officials}
 ##' @export
 
 
 Local.getOfficials <-
-	function (localId) {
+  function(localId) {
 
-		# internal function
-		Local.getOfficials.basic <- 
-			function (.localId) {
-				
-				request <-  "Local.getOfficials?"
-				inputs  <-  paste("&localId=",.localId, sep="")
-				output  <-  pvsRequest4(request,inputs)
-				output$localId <-.localId
-				
-				return(output)
-			}
-		
-		# Main function
-		output.list <- lapply(localId, FUN= function (b) {
-			Local.getOfficials.basic(.localId=b)
-		}
-		)
-		
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
-		
-		if ("data.frame" %in% class(output)) {
-			return(output)
-		}
-	}
-		
+    # internal function
+    Local.getOfficials.basic <-
+      function(.localId) {
+        request <- "Local.getOfficials?"
+        inputs <- paste("&localId=", .localId, sep = "")
+        output <- pvsRequest4(request, inputs)
+        output$localId <- .localId
 
+        return(output)
+      }
+
+    # Main function
+    output.list <- lapply(localId, FUN = function(b) {
+      Local.getOfficials.basic(.localId = b)
+    })
+
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    if ("data.frame" %in% class(output)) {
+      return(output)
+    }
+  }

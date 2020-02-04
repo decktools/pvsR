@@ -1,5 +1,5 @@
 ##' Get a list of branches of government and their IDs
-##' 
+##'
 ##' This function is a wrapper for the Office.getBranches() method of the PVS API Office class which grabs a list of branches of government and their IDs.
 ##' @usage Office.getBranches()
 ##' @return A data frame with a row for each branch and columns with the following variables describing the branch:\cr branches.branch*.officeBranchId,\cr branches.branch*.name.
@@ -17,13 +17,10 @@
 
 
 Office.getBranches <-
-	function () {
+  function() {
+    request <- "Office.getBranches?"
+    inputs <- ""
+    output <- pvsRequest4(request, inputs)
 
-		request <-  "Office.getBranches?"
-		inputs  <-  ""
-		output  <-  pvsRequest4(request,inputs)
-		
-		return(output)
-		
-		}
-
+    return(output)
+  }

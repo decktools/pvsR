@@ -1,5 +1,5 @@
 ##' Get several votes
-##' 
+##'
 ##' This function is essentially a  wrapper around Votes.getBillActionVotes() specified for large amount of requests.
 ##' @usage getAllVotes(actionId, batchsize=100, pause=0, backupfile="votes.list.Rdata")
 ##' @param actionId a character string or list of character strings with the action ID(s) (see references for details)
@@ -25,48 +25,45 @@
 
 
 getAllVotes <-
-	function(actionId, batchsize=100, pause=0, backupfile="votes.list.Rdata") {
-		
-		n <- length(actionId)
-		rest <- n%%batchsize
-		chunks.upper <- seq(from = batchsize, to = n, by = batchsize)
-		
-		
-		if (rest != 0) {
-			chunks.upper[length(chunks.upper) + 1] <- chunks.upper[length(chunks.upper)] + rest
-		}
-		
-		chunks.lower <- c(1,chunks.upper[-length(chunks.upper)] + 1)
-		
-		# prepare for loop over all chunks
-		chunks <- data.frame(lower=chunks.lower, upper=chunks.upper)
-		pb <- txtProgressBar(min = 0, max = nrow(chunks), style = 3)
-		
-		votes.list <- as.list(1:nrow(chunks))
-		save(votes.list, file=backupfile) # to be saved and loaded in each loop
-		
-		# process queries chunkwise
-		for (i in 1:nrow(chunks)) {
-			
-			Sys.sleep(pause)
-			
-			first <- chunks$lower[i]
-			last <- chunks$upper[i]
-			cIds <- actionId[first:last]
-			votes <- Votes.getBillActionVotes(cIds)
-			
-			load(backupfile)
-			votes.list[[i]] <- votes
-			save(votes.list, file=backupfile)
-			rm(votes.list )
-			gc(verbose=FALSE) # clean memory
-			
-			setTxtProgressBar(pb, i)
-		}
-		
-		load(backupfile)
-		allvotes <- bind_rows(votes.list)
-		
-		return(allvotes)
-	}
-  
+  function(actionId, batchsize = 100, pause = 0, backupfile = "votes.list.Rdata") {
+    n <- length(actionId)
+    rest <- n %% batchsize
+    chunks.upper <- seq(from = batchsize, to = n, by = batchsize)
+
+
+    if (rest != 0) {
+      chunks.upper[length(chunks.upper) + 1] <- chunks.upper[length(chunks.upper)] + rest
+    }
+
+    chunks.lower <- c(1, chunks.upper[-length(chunks.upper)] + 1)
+
+    # prepare for loop over all chunks
+    chunks <- data.frame(lower = chunks.lower, upper = chunks.upper)
+    pb <- txtProgressBar(min = 0, max = nrow(chunks), style = 3)
+
+    votes.list <- as.list(1:nrow(chunks))
+    save(votes.list, file = backupfile) # to be saved and loaded in each loop
+
+    # process queries chunkwise
+    for (i in 1:nrow(chunks)) {
+      Sys.sleep(pause)
+
+      first <- chunks$lower[i]
+      last <- chunks$upper[i]
+      cIds <- actionId[first:last]
+      votes <- Votes.getBillActionVotes(cIds)
+
+      load(backupfile)
+      votes.list[[i]] <- votes
+      save(votes.list, file = backupfile)
+      rm(votes.list)
+      gc(verbose = FALSE) # clean memory
+
+      setTxtProgressBar(pb, i)
+    }
+
+    load(backupfile)
+    allvotes <- bind_rows(votes.list)
+
+    return(allvotes)
+  }

@@ -1,5 +1,5 @@
 ##' Get a single vote according to official and action
-##' 
+##'
 ##' This function is a wrapper for the Votes.getBillActionVoteByOfficial() method of the PVS API Votes class which grabs single vote according to official and action. The function sends a request with this method to the PVS API for all action and candidate IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Votes.getBillActionVoteByOfficial(actionId, candidateId)
 ##' @param actionId a character string or list of character strings with the action ID(s) (see references for details)
@@ -20,32 +20,29 @@
 
 
 Votes.getBillActionVoteByOfficial <-
-	function (actionId, candidateId) {
+  function(actionId, candidateId) {
 
-		# internal function
-		Votes.getBillActionVoteByOfficial.basic <- 
-			function (.actionId, .candidateId) {
+    # internal function
+    Votes.getBillActionVoteByOfficial.basic <-
+      function(.actionId, .candidateId) {
+        request <- "Votes.getBillActionVoteByOfficial?"
+        inputs <- paste("&actionId=", .actionId, "&candidateId=", .candidateId, sep = "")
+        output <- pvsRequest(request, inputs)
+        output$actionId <- .actionId
+        output$candidateId <- .candidateId
 
-				request <-  "Votes.getBillActionVoteByOfficial?"
-				inputs  <-  paste("&actionId=",.actionId,"&candidateId=",.candidateId,sep="")
-				output  <-  pvsRequest(request,inputs)
-				output$actionId <- .actionId
-				output$candidateId <- .candidateId
-				
-				return(output)
-		}  
-		
-		# Main function  
-		output.list <- lapply(actionId, FUN= function (y) {
-			lapply(candidateId, FUN= function (s) {
-				Votes.getBillActionVoteByOfficial.basic(.actionId=y, .candidateId=s)
-			}
-			)
-		}
-		)
-		
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
-		
-		return(output)
-	}
+        return(output)
+      }
+
+    # Main function
+    output.list <- lapply(actionId, FUN = function(y) {
+      lapply(candidateId, FUN = function(s) {
+        Votes.getBillActionVoteByOfficial.basic(.actionId = y, .candidateId = s)
+      })
+    })
+
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

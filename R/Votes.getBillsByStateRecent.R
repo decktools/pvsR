@@ -1,5 +1,5 @@
 ##' Get a list of recent bills according to the state.
-##' 
+##'
 ##' This function is a wrapper for the Votes.getBillsByStateRecent() method of the PVS API Votes class which returns a list of recent bills according to the state. The maximum number of bills returned is 100. The function sends a request with this method to the PVS API for all states given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Votes.getBillsByStateRecent(amount, state="NA")
 ##' @param amount (optional) the amount of bills returned (default: 100, max: 100)
@@ -20,31 +20,28 @@
 
 
 Votes.getBillsByStateRecent <-
-	function (amount=100, state="NA") {
+  function(amount = 100, state = "NA") {
 
-		# internal function
-		Votes.getBillsByStateRecent.basic <- 
-			function (.amount, .state) {
+    # internal function
+    Votes.getBillsByStateRecent.basic <-
+      function(.amount, .state) {
+        request <- "Votes.getBillsByStateRecent?"
+        inputs <- paste("&amount=", .amount, "&state=", .state, sep = "")
+        output <- pvsRequest(request, inputs)
+        output$state <- .state
 
-				request <-  "Votes.getBillsByStateRecent?"
-				inputs  <-  paste("&amount=",.amount,"&state=",.state,sep="")
-				output  <-  pvsRequest(request,inputs)
-				output$state <- .state
-				
-				return(output)
-			}
+        return(output)
+      }
 
-		# Main function  
-		output.list <- lapply(amount, FUN= function (y) {
-			lapply(state, FUN= function (s) {
-				Votes.getBillsByStateRecent.basic(.amount=y, .state=s)
-			}
-			)
-		}
-		)
-		
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
-		
-		return(output)
-	}
+    # Main function
+    output.list <- lapply(amount, FUN = function(y) {
+      lapply(state, FUN = function(s) {
+        Votes.getBillsByStateRecent.basic(.amount = y, .state = s)
+      })
+    })
+
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

@@ -1,5 +1,5 @@
 ##' Get a list of bills according to category, year and state
-##' 
+##'
 ##' This function is a wrapper for the Votes.getBillsByCategoryYearState() method of the PVS API Votes class which grabs a list of bills according to category, year and state. The function sends a request with this method to the PVS API for all years, state and category IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Votes.getBillsByCategoryYearState(year, stateId, categoryId)
 ##' @param year a character string or list of character strings with the year ID(s)
@@ -20,34 +20,30 @@
 
 
 Votes.getBillsByCategoryYearState <-
-	function (year, stateId, categoryId) {
-		# internal function
-		Votes.getBillsByCategoryYearState.basic <- 
-			function (.year, .stateId, .categoryId) {
-				
-				request <-  "Votes.getBillsByCategoryYearState?"
-				inputs  <-  paste("&year=",.year,"&stateId=",.stateId, "&categoryId=", .categoryId, sep="")
-				output  <-  pvsRequest(request,inputs)
-				output$year <- .year
-				output$stateId <- .stateId
-				output$categoryId <- .categoryId
-				return(output)
-			}
+  function(year, stateId, categoryId) {
+    # internal function
+    Votes.getBillsByCategoryYearState.basic <-
+      function(.year, .stateId, .categoryId) {
+        request <- "Votes.getBillsByCategoryYearState?"
+        inputs <- paste("&year=", .year, "&stateId=", .stateId, "&categoryId=", .categoryId, sep = "")
+        output <- pvsRequest(request, inputs)
+        output$year <- .year
+        output$stateId <- .stateId
+        output$categoryId <- .categoryId
+        return(output)
+      }
 
-		# Main function  
-		output.list <- lapply(year, FUN= function (y) {
-			lapply(stateId, FUN= function (s) {
-				lapply(categoryId, FUN= function (c) {
-					Votes.getBillsByCategoryYearState.basic(.year=y, .stateId=s, .categoryId=c)
-				}
-				)
-			}
-			)
-		}
-		)
-		
-		output.list <- redlist(output.list) 
-		output <- bind_rows(output.list)
-		
-		return(output)
-	}
+    # Main function
+    output.list <- lapply(year, FUN = function(y) {
+      lapply(stateId, FUN = function(s) {
+        lapply(categoryId, FUN = function(c) {
+          Votes.getBillsByCategoryYearState.basic(.year = y, .stateId = s, .categoryId = c)
+        })
+      })
+    })
+
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

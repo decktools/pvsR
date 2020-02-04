@@ -2,11 +2,6 @@ Package: pvsR
 Type: Package
 Title: Interact with the Project Vote Smart API for Scientific Research
 Depends: R (>= 3.0)
-Imports:
-    XML,
-    nnet,
-    httr,
-    dplyr
 Version: 0.4
 Date: 2016-07-18
 Author: Ulrich Matter
@@ -26,4 +21,11 @@ Note: In order to use this package you need your personal Project Vote
     in the variable pvs.key the functions in this package won't
     work.
 NeedsCompilation: no
+Remotes:
+  decktools/bonanza
+Imports:
+    dplyr,
+    httr,
+    nnet,
+    XML
 RoxygenNote: 6.1.1

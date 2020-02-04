@@ -1,5 +1,5 @@
 ##' Get categories that contain released ratings according to state
-##' 
+##'
 ##' This function is a wrapper for the Rating.getCategories() method of the PVS API Rating class which dumps categories that contain released ratings according to state. The function sends a request with this method to the PVS API for all state IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Rating.getCategories(stateId="NA")
 ##' @param stateId (optional) a character string or list of character strings with the stateId(s) (default: "NA", for national) (see references for details)
@@ -19,28 +19,26 @@
 
 
 Rating.getCategories <-
-	function (stateId="NA") {
+  function(stateId = "NA") {
 
-		# internal function
-		Rating.getCategories.basic <- 
-			function (.stateId) {
-				
-				request <-  "Rating.getCategories?"
-				inputs  <-  paste("&stateId=",.stateId,sep="")
-				output  <-  pvsRequest4(request,inputs)
-				output$stateId <- .stateId
-				
-				return(output)
-		}
+    # internal function
+    Rating.getCategories.basic <-
+      function(.stateId) {
+        request <- "Rating.getCategories?"
+        inputs <- paste("&stateId=", .stateId, sep = "")
+        output <- pvsRequest4(request, inputs)
+        output$stateId <- .stateId
 
-		# Main function  
-		output.list <- lapply(stateId, FUN= function (s) {
-			Rating.getCategories.basic(.stateId=s)
-		}
-		)
+        return(output)
+      }
 
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
+    # Main function
+    output.list <- lapply(stateId, FUN = function(s) {
+      Rating.getCategories.basic(.stateId = s)
+    })
 
-		return(output)
-		}
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

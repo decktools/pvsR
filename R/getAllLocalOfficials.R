@@ -1,5 +1,5 @@
 ##' Fetch data on all local (city- or county-) officials
-##' 
+##'
 ##' This function is essentially a  wrapper around Local.getOfficials().
 ##' @usage getAllLocalOfficials(locality="counties", batchsize=50,
 ##'  pause=0, backupfile="locofs.list.Rdata")
@@ -23,53 +23,50 @@
 
 
 getAllLocalOfficials <-
-	function(locality="counties", batchsize=50, pause=0, backupfile="locofs.list.Rdata") {
-		
-		if (locality=="counties"){
-			counties <- getAllCounties()
-			localId <- counties$localId
-		}
-		if (locality=="cities"){
-			counties <- getAllCities()
-			localId <- counties$localId
-		}
-		
-		n <- length(localId)
-		rest <- n%%batchsize
-		chunks.upper <- seq(from = batchsize, to = n, by = batchsize)
+  function(locality = "counties", batchsize = 50, pause = 0, backupfile = "locofs.list.Rdata") {
+    if (locality == "counties") {
+      counties <- getAllCounties()
+      localId <- counties$localId
+    }
+    if (locality == "cities") {
+      counties <- getAllCities()
+      localId <- counties$localId
+    }
 
-		if (rest != 0) {
-			chunks.upper[length(chunks.upper) + 1] <- chunks.upper[length(chunks.upper)] + rest
-		}
-		chunks.lower <- c(1,chunks.upper[-length(chunks.upper)] + 1)
-		
-		# prepare for loop over all chunks
-		chunks <- data.frame(lower=chunks.lower, upper=chunks.upper)
-		pb <- txtProgressBar(min = 0, max = nrow(chunks), style = 3)
-		ofs.list <- as.list(1:nrow(chunks))
-		save(ofs.list, file=backupfile) # to be saved and loaded in each loop
-		
-		# process queries chunkwise
-		for (i in 1:nrow(chunks)) {
-			
-			Sys.sleep(pause)
-			
-			first <- chunks$lower[i]
-			last <- chunks$upper[i]
-			locIds <- localId[first:last]
-			bios <- Local.getOfficials(locIds)
-			
-			load(backupfile)
-			ofs.list[[i]] <- bios
-			save(ofs.list, file=backupfile)
-			rm(ofs.list )
-			gc(verbose=FALSE) # clean memory
-			setTxtProgressBar(pb, i)
-		}
-		
-		load(backupfile)
-		allLocalOffs <- bind_rows(ofs.list)
-		
-		return(allLocalOffs)
-	}
-  
+    n <- length(localId)
+    rest <- n %% batchsize
+    chunks.upper <- seq(from = batchsize, to = n, by = batchsize)
+
+    if (rest != 0) {
+      chunks.upper[length(chunks.upper) + 1] <- chunks.upper[length(chunks.upper)] + rest
+    }
+    chunks.lower <- c(1, chunks.upper[-length(chunks.upper)] + 1)
+
+    # prepare for loop over all chunks
+    chunks <- data.frame(lower = chunks.lower, upper = chunks.upper)
+    pb <- txtProgressBar(min = 0, max = nrow(chunks), style = 3)
+    ofs.list <- as.list(1:nrow(chunks))
+    save(ofs.list, file = backupfile) # to be saved and loaded in each loop
+
+    # process queries chunkwise
+    for (i in 1:nrow(chunks)) {
+      Sys.sleep(pause)
+
+      first <- chunks$lower[i]
+      last <- chunks$upper[i]
+      locIds <- localId[first:last]
+      bios <- Local.getOfficials(locIds)
+
+      load(backupfile)
+      ofs.list[[i]] <- bios
+      save(ofs.list, file = backupfile)
+      rm(ofs.list)
+      gc(verbose = FALSE) # clean memory
+      setTxtProgressBar(pb, i)
+    }
+
+    load(backupfile)
+    allLocalOffs <- bind_rows(ofs.list)
+
+    return(allLocalOffs)
+  }

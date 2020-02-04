@@ -1,5 +1,5 @@
 ##' Get information about a state
-##' 
+##'
 ##' This function is a wrapper for the State.getState() method of the PVS API State class which grabs various data on a state. The function sends a request with this method to the PVS API for all state IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage State.getState(stateId)
 ##' @param stateId a character string or list of character strings with the state ID(s) (see references for details)
@@ -20,28 +20,26 @@
 
 
 State.getState <-
-	function (stateId) {
+  function(stateId) {
 
-		# internal function
-		State.getState.basic <- 
-			function (.stateId) {
+    # internal function
+    State.getState.basic <-
+      function(.stateId) {
+        request <- "State.getState?"
+        inputs <- paste("&stateId=", .stateId, sep = "")
+        output <- pvsRequest4(request, inputs)
+        output$stateId <- .stateId
 
-				request <-  "State.getState?"
-				inputs  <-  paste("&stateId=",.stateId,sep="")
-				output  <-  pvsRequest4(request,inputs)
-				output$stateId <- .stateId
-				
-				return(output)
-			}
+        return(output)
+      }
 
-		# Main function  
-		output.list <- lapply(stateId, FUN= function (s) {
-			State.getState.basic(.stateId=s)
-		}
-		)
+    # Main function
+    output.list <- lapply(stateId, FUN = function(s) {
+      State.getState.basic(.stateId = s)
+    })
 
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
 
-		return(output)
-	}
+    return(output)
+  }

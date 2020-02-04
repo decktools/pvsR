@@ -1,5 +1,5 @@
 ##' Get district basic election data
-##' 
+##'
 ##' This function is a wrapper for the Election.getElection() method of the PVS API Election class which grabs district basic election data according to the election ID. The function sends a request with this method to the PVS API for all election IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Election.getElection(electionId)
 ##' @param electionId a character string or list of character strings with the election ID(s) (see references for details)
@@ -18,27 +18,25 @@
 
 
 Election.getElection <-
-	function (electionId) {
+  function(electionId) {
 
-		# internal function
-		Election.getElection.basic <- 
-			function (.electionId) {
-				request <-  "Election.getElection?"
-				inputs  <-  paste("&electionId=",.electionId,sep="")
-				output  <-  pvsRequest10(request,inputs)
-				
-				return(output)
-		}
-		
-		
-		# Main function  
-		output.list <- lapply(electionId, FUN= function (s) {
-			Election.getElection.basic(.electionId=s)
-		}
-		)
-		
-		output.list <- redlist(output.list)
-		output <- rbind_all(output.list)
-		return(output)
-	}
+    # internal function
+    Election.getElection.basic <-
+      function(.electionId) {
+        request <- "Election.getElection?"
+        inputs <- paste("&electionId=", .electionId, sep = "")
+        output <- pvsRequest10(request, inputs)
 
+        return(output)
+      }
+
+
+    # Main function
+    output.list <- lapply(electionId, FUN = function(s) {
+      Election.getElection.basic(.electionId = s)
+    })
+
+    output.list <- redlist(output.list)
+    output <- rbind_all(output.list)
+    return(output)
+  }

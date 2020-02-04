@@ -1,5 +1,5 @@
 ##' Get votes listed by candidate on a certain bill action
-##' 
+##'
 ##' This function is a wrapper for the Votes.getBillActionVotes() method of the PVS API Votes class which provides votes listed by candidate on a certain bill action. The function sends a request with this method to the PVS API for all action IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Votes.getBillActionVotes(actionId)
 ##' @param actionId a character string or list of character strings with the action ID(s) (see references for details)
@@ -18,28 +18,26 @@
 
 
 Votes.getBillActionVotes <-
-	
-	function (actionId) {
-		# internal function
-		Votes.getBillActionVotes.basic <- 
-			function (.actionId) {
 
-				request <-  "Votes.getBillActionVotes?"
-				inputs  <-  paste("&actionId=",.actionId, sep="")
-				output  <-  pvsRequest(request,inputs)
-				output$actionId  <- .actionId  
-				
-				return(output)
-				}
+  function(actionId) {
+    # internal function
+    Votes.getBillActionVotes.basic <-
+      function(.actionId) {
+        request <- "Votes.getBillActionVotes?"
+        inputs <- paste("&actionId=", .actionId, sep = "")
+        output <- pvsRequest(request, inputs)
+        output$actionId <- .actionId
 
-		# Main function  
-		output.list <- lapply(actionId, FUN= function (b) {
-			Votes.getBillActionVotes.basic(.actionId=b)
-			}
-		)
+        return(output)
+      }
 
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
-		
-		return(output)
-		}
+    # Main function
+    output.list <- lapply(actionId, FUN = function(b) {
+      Votes.getBillActionVotes.basic(.actionId = b)
+    })
+
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

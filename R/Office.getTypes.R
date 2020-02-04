@@ -1,5 +1,5 @@
 ##' Get all office types tracked
-##' 
+##'
 ##' This function is a wrapper for the Office.getTypes() method of the PVS API Office class which grabs a list of office types Project Vote Smart keeps track of.
 ##' @usage Office.getTypes()
 ##' @return A data frame with rows for each office type and columns with the following variables describing the office type:\cr officeTypes.type*.officeTypeId,\cr officeTypes.type*.officeLevelId,\cr officeTypes.type*.officeBranchId,\cr officeTypes.type*.name.
@@ -16,12 +16,10 @@
 
 
 Office.getTypes <-
-	function () {
+  function() {
+    request <- "Office.getTypes?"
+    inputs <- ""
+    output <- as.tbl(pvsRequest4(request, inputs))
 
-		request <-  "Office.getTypes?"
-		inputs  <-  ""
-		output  <-  as.tbl(pvsRequest4(request,inputs))
-		
-		return(output)
-		
-		}
+    return(output)
+  }

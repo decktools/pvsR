@@ -1,5 +1,5 @@
 ##' Get district basic election data according to election ID and stage ID
-##' 
+##'
 ##' This function is a wrapper for the Election.getStageCandidates() method of the PVS API Election class which grabs district basic election data according to the election and stage ID. The function sends a request with this method to the PVS API for all election and stage IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Election.getStageCandidates(stageId, electionId)
 ##' @param electionId a character string or list of character strings with the election ID(s) (see references for details)
@@ -20,33 +20,28 @@
 
 
 Election.getStageCandidates <-
-	function (stageId, electionId) {
+  function(stageId, electionId) {
 
-		# internal function
-		Election.getStageCandidates.basic <- 
-			function (.stageId, .electionId) {
-				
-				request <-  "Election.getStageCandidates?"
-				inputs  <-  paste("&stageId=",.stageId,"&electionId=",.electionId,sep="")
-				output  <-  pvsRequest6(request,inputs)
-				output$stageId <- .stageId
-				output$electionId <- .electionId
-				
-				return(output)
-			}
+    # internal function
+    Election.getStageCandidates.basic <-
+      function(.stageId, .electionId) {
+        request <- "Election.getStageCandidates?"
+        inputs <- paste("&stageId=", .stageId, "&electionId=", .electionId, sep = "")
+        output <- pvsRequest6(request, inputs)
+        output$stageId <- .stageId
+        output$electionId <- .electionId
 
-		# Main function  
-		output.list <- lapply(stageId, FUN= function (y) {
-			lapply(electionId, FUN= function (s) {
-				Election.getStageCandidates.basic(.stageId=y, .electionId=s)
-			}
-			)
-		}
-		)
-		
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
-		return(output)
-	
-		}
+        return(output)
+      }
 
+    # Main function
+    output.list <- lapply(stageId, FUN = function(y) {
+      lapply(electionId, FUN = function(s) {
+        Election.getStageCandidates.basic(.stageId = y, .electionId = s)
+      })
+    })
+
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+    return(output)
+  }

@@ -1,5 +1,5 @@
 ##' Get a list of candidates according to ZIP code
-##' 
+##'
 ##' This function is a wrapper for the Candidates.getByZip() method of the PVS API Candidates class which grabs a list of candidates according to the ZIP code. The function sends a request with this method to the PVS API for all ZIP codes and election years given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Candidates.getByZip(zip5, electionYear=NULL)
 ##' @param zip5 a character string or list of character strings with the 5-digit ZIP code(s)
@@ -18,63 +18,54 @@
 
 
 Candidates.getByZip <-
-	function (zip5, electionYear=NULL) {
-		
-		if (length(electionYear)==0) {
-			# internal function
-			Candidates.getByZip.basic1 <- 
-				function (.zip5) {
-					
-					request <-  "Candidates.getByZip?"
-					inputs  <-  paste("&zip5=",.zip5,sep="")
-					output  <-  pvsRequest6(request,inputs)
-					output$zip5 <- .zip5
-					return(output)
-			}
+  function(zip5, electionYear = NULL) {
+    if (length(electionYear) == 0) {
+      # internal function
+      Candidates.getByZip.basic1 <-
+        function(.zip5) {
+          request <- "Candidates.getByZip?"
+          inputs <- paste("&zip5=", .zip5, sep = "")
+          output <- pvsRequest6(request, inputs)
+          output$zip5 <- .zip5
+          return(output)
+        }
 
-			# Main function  
-			output.list <- lapply(zip5, FUN= function (s) {
-				Candidates.getByZip.basic1(.zip5=s)
-			}
-			)
+      # Main function
+      output.list <- lapply(zip5, FUN = function(s) {
+        Candidates.getByZip.basic1(.zip5 = s)
+      })
 
-			output.list <- redlist(output.list)
-			output <- rbind_all(output.list)
+      output.list <- redlist(output.list)
+      output <- rbind_all(output.list)
+    } else {
 
-		} else {
-			
-			# internal function
-			Candidates.getByZip.basic2 <- 
-				function (.zip5, .electionYear) {
-					
-					request <-  "Candidates.getByZip?"
-					inputs  <-  paste("&zip5=",.zip5, "&electionYear=", .electionYear, sep="")
-					output  <-  pvsRequest6(request,inputs)
-					output$zip5 <- .zip5
-					output$electionYear.input <- .electionYear
-					
-					return(output)
-				}
+      # internal function
+      Candidates.getByZip.basic2 <-
+        function(.zip5, .electionYear) {
+          request <- "Candidates.getByZip?"
+          inputs <- paste("&zip5=", .zip5, "&electionYear=", .electionYear, sep = "")
+          output <- pvsRequest6(request, inputs)
+          output$zip5 <- .zip5
+          output$electionYear.input <- .electionYear
 
-			# Main function  
-			output.list <- lapply(zip5, FUN= function (s) {
-				lapply(electionYear, FUN= function (y) {
-					Candidates.getByZip.basic2( .zip5=s, .electionYear=y)
-				}
-				)
-			}
-			)
-			
-			output.list <- redlist(output.list)
-			output <- rbind_all(output.list)
+          return(output)
+        }
 
-			# Avoids that output is missleading, because electionYear is already given in request-output, but also a
-			# additionally generated (as electionYear.input). Problem exists because some request-outputs might be empty
-			# and therefore only contain one "electionYear" whereas the non-empty ones contain two. (see basic function)
-			output$electionYear[c(as.vector(is.na(output$electionYear)))] <- output$electionYear.input[as.vector(is.na(output$electionYear))]
-			output$electionYear.input <- NULL
-			
-		}
-		return(output)
-	}
+      # Main function
+      output.list <- lapply(zip5, FUN = function(s) {
+        lapply(electionYear, FUN = function(y) {
+          Candidates.getByZip.basic2(.zip5 = s, .electionYear = y)
+        })
+      })
 
+      output.list <- redlist(output.list)
+      output <- rbind_all(output.list)
+
+      # Avoids that output is missleading, because electionYear is already given in request-output, but also a
+      # additionally generated (as electionYear.input). Problem exists because some request-outputs might be empty
+      # and therefore only contain one "electionYear" whereas the non-empty ones contain two. (see basic function)
+      output$electionYear[c(as.vector(is.na(output$electionYear)))] <- output$electionYear.input[as.vector(is.na(output$electionYear))]
+      output$electionYear.input <- NULL
+    }
+    return(output)
+  }

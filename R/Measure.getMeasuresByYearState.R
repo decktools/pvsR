@@ -1,5 +1,5 @@
 ##' Get a list of state ballot measures in a given year
-##' 
+##'
 ##' This function is a wrapper for the Measure.getMeasuresByYearState() method of the PVS API Measure class which grabs a list of state ballot measures in a given year. The function sends a request with this method to the PVS API for all years and state IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Measure.getMeasuresByYearState(year, stateId)
 ##' @param year a character string or list of character strings with the year(s)
@@ -19,46 +19,42 @@
 ##' @export
 
 Measure.getMeasuresByYearState <-
-	function (year, stateId) {
+  function(year, stateId) {
 
-		# internal function
-		Measure.getMeasuresByYearState.basic <- 
-			function (.year, .stateId) {
-				
-				request <-  "Measure.getMeasuresByYearState?"
-				inputs  <-  paste("&year=",.year,"&stateId=",.stateId,sep="")
-				output  <-  pvsRequest(request,inputs)
-				output$year <-.year
-				output$stateId <- .stateId
-				
-				return(output)
-				}
+    # internal function
+    Measure.getMeasuresByYearState.basic <-
+      function(.year, .stateId) {
+        request <- "Measure.getMeasuresByYearState?"
+        inputs <- paste("&year=", .year, "&stateId=", .stateId, sep = "")
+        output <- pvsRequest(request, inputs)
+        output$year <- .year
+        output$stateId <- .stateId
 
-		#Main function
-		output.list <- lapply(year, FUN= function (y) {
-			lapply(stateId, FUN= function (s) {
-				Measure.getMeasuresByYearState.basic(.year=y, .stateId=s)
-			}
-			)
-		}
-		)
-#		output.list <- do.call("c",output.list)
-# 
-# 		# which list entry has the most columns, how many are these?
-# 		coln <- which.is.max(sapply(output.list, ncol));
-# 		max.cols <- max(sapply(output.list, ncol));
-# 		
-# 		# give all list entries (dfs in list) the same number of columns and the same names
-# 		output.list2 <- lapply(output.list, function(x){
-# 			if (ncol(x) < max.cols) x <- data.frame(cbind(matrix(NA, ncol=max.cols-ncol(x), nrow = 1, ),x),row.names=NULL)
-# 			names(x) <- names(output.list[[coln]])
-# 			x
-# 		})
-# 		
-# 		output <- do.call("rbind",output.list2)
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
-		
-		return(output)
+        return(output)
+      }
 
-		}
+    # Main function
+    output.list <- lapply(year, FUN = function(y) {
+      lapply(stateId, FUN = function(s) {
+        Measure.getMeasuresByYearState.basic(.year = y, .stateId = s)
+      })
+    })
+    # 		output.list <- do.call("c",output.list)
+    #
+    # 		# which list entry has the most columns, how many are these?
+    # 		coln <- which.is.max(sapply(output.list, ncol));
+    # 		max.cols <- max(sapply(output.list, ncol));
+    #
+    # 		# give all list entries (dfs in list) the same number of columns and the same names
+    # 		output.list2 <- lapply(output.list, function(x){
+    # 			if (ncol(x) < max.cols) x <- data.frame(cbind(matrix(NA, ncol=max.cols-ncol(x), nrow = 1, ),x),row.names=NULL)
+    # 			names(x) <- names(output.list[[coln]])
+    # 			x
+    # 		})
+    #
+    # 		output <- do.call("rbind",output.list2)
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

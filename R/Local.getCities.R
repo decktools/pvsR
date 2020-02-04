@@ -1,5 +1,5 @@
 ##' Get cities in a state
-##' 
+##'
 ##' This function is a wrapper for the Local.getCities() method of the PVS API Local class which returns a list of cities in a state. The function sends a request with this method to the PVS API for all state IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Local.getCities(stateId)
 ##' @param stateId a character string or list of character strings with the state ID(s) (see references for details)
@@ -20,29 +20,28 @@
 
 
 Local.getCities <-
-	function (stateId) {
+  function(stateId) {
 
-		# internal function
-		Local.getCities.basic <- 
-			function (.stateId) {
-				request <-  "Local.getCities?"
-				inputs  <-  paste("&stateId=",.stateId, sep="")
-				output  <-  pvsRequest4(request,inputs)
-				output$stateId <-.stateId
-				
-				return(output)
-			}
+    # internal function
+    Local.getCities.basic <-
+      function(.stateId) {
+        request <- "Local.getCities?"
+        inputs <- paste("&stateId=", .stateId, sep = "")
+        output <- pvsRequest4(request, inputs)
+        output$stateId <- .stateId
 
-		# Main function
-		output.list <- lapply(stateId, FUN= function (b) {
-			Local.getCities.basic(.stateId=b)
-		}
-		)
-		
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
-		
-		if ("data.frame" %in% class(output)) {
-			return(output)
-		}
-	}
+        return(output)
+      }
+
+    # Main function
+    output.list <- lapply(stateId, FUN = function(b) {
+      Local.getCities.basic(.stateId = b)
+    })
+
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    if ("data.frame" %in% class(output)) {
+      return(output)
+    }
+  }

@@ -1,5 +1,5 @@
 ##' Get a candidate's rating by special interest groups
-##' 
+##'
 ##' This function is a wrapper for the Rating.getCandidateRating() method of the PVS API Rating class which grabs a candidate's rating by special interest groups (SIG). The function sends a request with this method to the PVS API for all candidate and SIG IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Rating.getCandidateRating(candidateId, sigId=NULL)
 ##' @param candidateId a character string or list of character strings with the candidateId(s) (see references for details)
@@ -21,56 +21,48 @@
 
 
 Rating.getCandidateRating <-
-	function (candidateId, sigId=NULL) {
-		
-		if (length(sigId)==0) {
-			
-			# internal function
-			Rating.getCandidateRating.basic1 <- 
-				function (.candidateId) {
-					
-					
-					request <-  "Rating.getCandidateRating?"
-					inputs  <-  paste("&candidateId=",.candidateId,sep="")
-					output  <-  pvsRequest6.1b(request,inputs)
-					output$candidateId <- .candidateId
-					
-					return(output)
-				}
-			
-			
-			# Main function  
-			output.list <- lapply(candidateId, FUN= function (y) {
-				Rating.getCandidateRating.basic1(.candidateId=y)
-			}
-			)  
-			
-		} else {
-			
-			# internal function
-			Rating.getCandidateRating.basic2 <- 
-				function (.candidateId, .sigId) {
+  function(candidateId, sigId = NULL) {
+    if (length(sigId) == 0) {
 
-					request <-  "Rating.getCandidateRating?"
-					inputs  <-  paste("&candidateId=",.candidateId,"&sigId=",.sigId,sep="")
-					output  <-  pvsRequest6.1b(request,inputs)
-					output$candidateId <- .candidateId
-					
-					return(output)
-				}
+      # internal function
+      Rating.getCandidateRating.basic1 <-
+        function(.candidateId) {
+          request <- "Rating.getCandidateRating?"
+          inputs <- paste("&candidateId=", .candidateId, sep = "")
+          output <- pvsRequest6.1b(request, inputs)
+          output$candidateId <- .candidateId
 
-			# Main function  
-			output.list <- lapply(candidateId, FUN= function (y) {
-				lapply(sigId, FUN= function (s) {
-					Rating.getCandidateRating.basic2(.candidateId=y, .sigId=s)
-				}
-				)
-			}
-			)
-			}
-		
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
+          return(output)
+        }
 
-		return(output)
-		}
+
+      # Main function
+      output.list <- lapply(candidateId, FUN = function(y) {
+        Rating.getCandidateRating.basic1(.candidateId = y)
+      })
+    } else {
+
+      # internal function
+      Rating.getCandidateRating.basic2 <-
+        function(.candidateId, .sigId) {
+          request <- "Rating.getCandidateRating?"
+          inputs <- paste("&candidateId=", .candidateId, "&sigId=", .sigId, sep = "")
+          output <- pvsRequest6.1b(request, inputs)
+          output$candidateId <- .candidateId
+
+          return(output)
+        }
+
+      # Main function
+      output.list <- lapply(candidateId, FUN = function(y) {
+        lapply(sigId, FUN = function(s) {
+          Rating.getCandidateRating.basic2(.candidateId = y, .sigId = s)
+        })
+      })
+    }
+
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

@@ -1,5 +1,5 @@
 ##' Get a list of vetoes according to candidate
-##' 
+##'
 ##' This function is a wrapper for the Votes.getVetoes() method of the PVS API Votes class which returns a list of vetoes according to candidate. The function sends a request with this method to the PVS API for all candidate IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Votes.getVetoes(candidateId)
 ##' @param candidateId a character string or list of character strings with the candidate ID(s) (see references for details)
@@ -18,28 +18,26 @@
 
 
 Votes.getVetoes <-
-	function (candidateId) {
+  function(candidateId) {
 
-		# internal function
-		Votes.getVetoes.basic <- 
-			function (.candidateId) {
+    # internal function
+    Votes.getVetoes.basic <-
+      function(.candidateId) {
+        request <- "Votes.getVetoes?"
+        inputs <- paste("&candidateId=", .candidateId, sep = "")
+        output <- pvsRequest(request, inputs)
+        output$candidateId <- .candidateId
 
-				request <-  "Votes.getVetoes?"
-				inputs  <-  paste("&candidateId=",.candidateId, sep="")
-				output  <-  pvsRequest(request,inputs)
-				output$candidateId  <- .candidateId  
-				
-				return(output)
-			}
-		
-		# Main function  
-		output.list <- lapply(candidateId, FUN= function (b) {
-			Votes.getVetoes.basic(.candidateId=b)
-		}
-		)
-		
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
+        return(output)
+      }
 
-		return(output)
-	}
+    # Main function
+    output.list <- lapply(candidateId, FUN = function(b) {
+      Votes.getVetoes.basic(.candidateId = b)
+    })
+
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

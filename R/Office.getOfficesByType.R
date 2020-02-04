@@ -1,5 +1,5 @@
 ##' Get offices tracked according to type
-##' 
+##'
 ##' This function is a wrapper for the Office.getOfficesByType() method of the PVS API Office class which grabs a list of offices Project Vote Smart keeps track of according to their type. The function sends a request with this method to the PVS API for all office type IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Office.getOfficesByType(officeTypeId)
 ##' @param officeTypeId a character string or list of character strings with the office type ID(s) (see references for details)
@@ -18,28 +18,25 @@
 
 
 Office.getOfficesByType <-
-	function (officeTypeId) {
+  function(officeTypeId) {
 
-		# internal function
-		Office.getOfficesByType.basic <- 
-			function (.officeTypeId) {
-				
-				request <-  "Office.getOfficesByType?"
-				inputs  <-  paste("&officeTypeId=",.officeTypeId,sep="")
-				output  <-  pvsRequest4(request,inputs)
-				
-				return(output)
-			}
+    # internal function
+    Office.getOfficesByType.basic <-
+      function(.officeTypeId) {
+        request <- "Office.getOfficesByType?"
+        inputs <- paste("&officeTypeId=", .officeTypeId, sep = "")
+        output <- pvsRequest4(request, inputs)
 
-		# Main function  
-		output.list <- lapply(officeTypeId, FUN= function (s) {
-			Office.getOfficesByType.basic(.officeTypeId=s)
-		}
-		)
-		
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
+        return(output)
+      }
 
-		return(output)
-		}
+    # Main function
+    output.list <- lapply(officeTypeId, FUN = function(s) {
+      Office.getOfficesByType.basic(.officeTypeId = s)
+    })
 
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

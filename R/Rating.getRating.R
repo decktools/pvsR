@@ -1,5 +1,5 @@
 ##' Get all candidate ratings from an evaluation by a special interest group
-##' 
+##'
 ##' This function is a wrapper for the Rating.getRating() method of the PVS API Rating class which dumps all candidate ratings from a scorecard by a special interest group (SIG). The function sends a request with this method to the PVS API for all rating IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Rating.getRating(ratingId)
 ##' @param ratingId a character string or list of character strings with the rating ID(s) (see references for details)
@@ -19,28 +19,26 @@
 
 
 Rating.getRating <-
-function (ratingId) {
-  
-  
-  # internal function
-  Rating.getRating.basic <- function (.ratingId) {
-    
-    request <-  "Rating.getRating?"
-    inputs  <-  paste("&ratingId=",.ratingId,sep="")
-    output  <-  pvsRequest4(request,inputs)
-    output$ratingId <- .ratingId
-    output
+  function(ratingId) {
+
+
+    # internal function
+    Rating.getRating.basic <- function(.ratingId) {
+      request <- "Rating.getRating?"
+      inputs <- paste("&ratingId=", .ratingId, sep = "")
+      output <- pvsRequest4(request, inputs)
+      output$ratingId <- .ratingId
+      output
     }
-  
-  
-  # Main function  
-  output.list <- lapply(ratingId, FUN= function (s) {
-    Rating.getRating.basic(.ratingId=s)
-  	}
-    )
-  
-  
-  output.list <- redlist(output.list)
-  output <- bind_rows(output.list)
-  return(output)
+
+
+    # Main function
+    output.list <- lapply(ratingId, FUN = function(s) {
+      Rating.getRating.basic(.ratingId = s)
+    })
+
+
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+    return(output)
   }

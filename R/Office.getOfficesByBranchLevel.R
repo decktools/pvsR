@@ -1,5 +1,5 @@
 ##' Get offices tracked according to branch and level
-##' 
+##'
 ##' This function is a wrapper for the Office.getOfficesByBranchLevel() method of the PVS API Office class which grabs a list of offices Project Vote Smart keeps track of according to government branch and level. The function sends a request with this method to the PVS API for all branch and level IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Office.getOfficesByBranchLevel(branchId, levelId)
 ##' @param branchId a character string or list of character strings with the branch ID(s) (see references for details)
@@ -20,31 +20,27 @@
 
 
 Office.getOfficesByBranchLevel <-
-	function (branchId, levelId) {
+  function(branchId, levelId) {
 
-		# internal function
-		Office.getOfficesByBranchLevel.basic <- 
-			function (.branchId, .levelId) {
-				
-				request <-  "Office.getOfficesByBranchLevel?"
-				inputs  <-  paste("&branchId=",.branchId,"&levelId=",.levelId,sep="")
-				output  <-  pvsRequest4(request,inputs)
-				
-				return(output)
-		}
+    # internal function
+    Office.getOfficesByBranchLevel.basic <-
+      function(.branchId, .levelId) {
+        request <- "Office.getOfficesByBranchLevel?"
+        inputs <- paste("&branchId=", .branchId, "&levelId=", .levelId, sep = "")
+        output <- pvsRequest4(request, inputs)
 
-		# Main function  
-		output.list <- lapply(branchId, FUN= function (y) {
-			lapply(levelId, FUN= function (s) {
-				Office.getOfficesByBranchLevel.basic(.branchId=y, .levelId=s)
-			}
-			)
-		}
-		)
-		
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
+        return(output)
+      }
 
-		return(output)
-	}
+    # Main function
+    output.list <- lapply(branchId, FUN = function(y) {
+      lapply(levelId, FUN = function(s) {
+        Office.getOfficesByBranchLevel.basic(.branchId = y, .levelId = s)
+      })
+    })
 
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

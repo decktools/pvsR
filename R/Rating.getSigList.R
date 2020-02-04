@@ -1,5 +1,5 @@
 ##' Get a list of special interest groups according to rating category and state.
-##' 
+##'
 ##' This function is a wrapper for the Rating.getSigList() method of the PVS API Rating class which dumps special interest groups (SIGs) according to category and state. The function sends a request with this method to the PVS API for all category and state IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Rating.getSigList(stateId="NA", categoryId)
 ##' @param stateId (optional) a character string or list of character strings with the state ID(s) (default: "NA", for national) (see references for details)
@@ -18,35 +18,31 @@
 ##' \dontrun{sig}
 ##' @export
 
-
-
 Rating.getSigList <-
-	function (stateId="NA", categoryId) {
-		# internal function
-		Rating.getSigList.basic <- 
-			function (.stateId, .categoryId) {
-				
-				request <-  "Rating.getSigList?"
-				inputs  <-  paste("&stateId=",.stateId,"&categoryId=",.categoryId,sep="")
-				output  <-  pvsRequest4(request,inputs)
-				output$stateId <- .stateId
-				output$categoryId <- .categoryId
-				
-				return(output)
-			}
-		
-		
-		# Main function  
-		output.list <- lapply(stateId, FUN= function (y) {
-			lapply(categoryId, FUN= function (s) {
-				Rating.getSigList.basic(.stateId=y, .categoryId=s)
-			}
-			)
-		}
-		)
-		
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
-		
-		return(output)
-	}
+  function(stateId = "NA", categoryId) {
+    # internal function
+    Rating.getSigList.basic <-
+      function(.stateId, .categoryId) {
+        request <- "Rating.getSigList?"
+        inputs <- paste("&stateId=", .stateId, "&categoryId=", .categoryId, sep = "")
+        output <- pvsRequest4(request, inputs)
+        output$stateId <- .stateId
+        output$categoryId <- .categoryId
+
+        return(output)
+      }
+
+
+    # Main function
+    output.list <- lapply(stateId, FUN = function(y) {
+      lapply(categoryId, FUN = function(s) {
+        Rating.getSigList.basic(.stateId = y, .categoryId = s)
+      })
+    })
+
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list) %>%
+      as_tibble()
+
+    return(output)
+  }

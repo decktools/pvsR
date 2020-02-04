@@ -1,5 +1,5 @@
 ##' Get detailed information about a special interest group
-##' 
+##'
 ##' This function is a wrapper for the Rating.getSig() method of the PVS API Rating class which dumps detailed information about special interest groups (SIGs). The function sends a request with this method to the PVS API for all SIG IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Rating.getSig(sigId)
 ##' @param sigId a character string or list of character strings with the special interest group's ID(s) (see references for details)
@@ -19,28 +19,26 @@
 
 
 Rating.getSig <-
-	function (sigId) {
+  function(sigId) {
 
-		# internal function
-		Rating.getSig.basic <- 
-			function (.sigId) {
-				
-				request <-  "Rating.getSig?"
-				inputs  <-  paste("&sigId=",.sigId,sep="")
-				output  <-  pvsRequest4.1(request,inputs)
-				output$sigId <- .sigId
-				
-				return(output)
-			}
-		
-		# Main function  
-		output.list <- lapply(sigId, FUN= function (s) {
-			Rating.getSig.basic(.sigId=s)
-		}
-		)
-		
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
-		
-		return(output)
-	}
+    # internal function
+    Rating.getSig.basic <-
+      function(.sigId) {
+        request <- "Rating.getSig?"
+        inputs <- paste("&sigId=", .sigId, sep = "")
+        output <- pvsRequest4.1(request, inputs)
+        output$sigId <- .sigId
+
+        return(output)
+      }
+
+    # Main function
+    output.list <- lapply(sigId, FUN = function(s) {
+      Rating.getSig.basic(.sigId = s)
+    })
+
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

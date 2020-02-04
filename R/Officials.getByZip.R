@@ -1,5 +1,5 @@
 ##' Get a list of officials according to the ZIP code
-##' 
+##'
 ##' This function is a wrapper for the Officials.getByZip() method of the PVS API Officials class which grabs a list of officials according to the ZIP code of the area they represent. The function sends a request with this method to the PVS API for all ZIP Codes given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Officials.getByZip(zip5, zip4=NULL)
 ##' @param zip5 a character string or list of character strings with the five-digit ZIP code
@@ -20,64 +20,56 @@
 
 
 Officials.getByZip <-
-	function (zip5, zip4=NULL) {
-		
-		if (length(zip4)==0) {
-			# internal function
-			Officials.getByZip.basic1 <- 
-				function (.zip5) {
+  function(zip5, zip4 = NULL) {
+    if (length(zip4) == 0) {
+      # internal function
+      Officials.getByZip.basic1 <-
+        function(.zip5) {
+          request <- "Officials.getByZip?"
+          inputs <- paste("&zip5=", .zip5, sep = "")
+          output <- pvsRequest5(request, inputs)
+          output$zip5 <- .zip5
 
-					request <-  "Officials.getByZip?"
-					inputs  <-  paste("&zip5=",.zip5,sep="")
-					output  <-  pvsRequest5(request,inputs)
-					output$zip5 <- .zip5
-					
-					return(output)
-				}
+          return(output)
+        }
 
-			# Main function  
-			output.list <- lapply(zip5, FUN= function (s) {
-				Officials.getByZip.basic1(.zip5=s)
-			}
-			)
+      # Main function
+      output.list <- lapply(zip5, FUN = function(s) {
+        Officials.getByZip.basic1(.zip5 = s)
+      })
 
-			output.list <- redlist(output.list)
-			output <- bind_rows(output.list)
+      output.list <- redlist(output.list)
+      output <- bind_rows(output.list)
+    } else {
 
-		} else {
-			
-			# internal function
-			Officials.getByZip.basic2 <- 
-				function (.zip5, .zip4) {
-					
-					request <-  "Officials.getByZip?"
-					inputs  <-  paste("&zip5=",.zip5, "&zip4=", .zip4, sep="")
-					output  <-  pvsRequest4(request,inputs)
-					output$zip5 <- .zip5
-					output$zip4.input <- .zip4
-					
-					return(output)
-					}
-			
-			
-			# Main function  
-			output.list <- lapply(zip5, FUN= function (s) {
-				lapply(zip4, FUN= function (c) {
-					Officials.getByZip.basic2( .zip5=s, .zip4=c)
-				}
-				)
-			}
-			)
+      # internal function
+      Officials.getByZip.basic2 <-
+        function(.zip5, .zip4) {
+          request <- "Officials.getByZip?"
+          inputs <- paste("&zip5=", .zip5, "&zip4=", .zip4, sep = "")
+          output <- pvsRequest4(request, inputs)
+          output$zip5 <- .zip5
+          output$zip4.input <- .zip4
 
-			output.list <- redlist(output.list)
-			output <- bind_rows(output.list)
+          return(output)
+        }
 
-			# Avoids that output is missleading, because zip4 is already given in request-output, but also a
-			# additionally generated (as zip4.input). Problem exists because some request-outputs might be empty
-			# and therefore only contain one "zip4" whereas the non-empty ones contain two. (see basic function)
-			output$zip4[c(as.vector(is.na(output$zip4)))] <- output$zip4.input[as.vector(is.na(output$zip4))]
-			output$zip4.input <- NULL
-		
-			}
-		return(output)
-	}
+
+      # Main function
+      output.list <- lapply(zip5, FUN = function(s) {
+        lapply(zip4, FUN = function(c) {
+          Officials.getByZip.basic2(.zip5 = s, .zip4 = c)
+        })
+      })
+
+      output.list <- redlist(output.list)
+      output <- bind_rows(output.list)
+
+      # Avoids that output is missleading, because zip4 is already given in request-output, but also a
+      # additionally generated (as zip4.input). Problem exists because some request-outputs might be empty
+      # and therefore only contain one "zip4" whereas the non-empty ones contain two. (see basic function)
+      output$zip4[c(as.vector(is.na(output$zip4)))] <- output$zip4.input[as.vector(is.na(output$zip4))]
+      output$zip4.input <- NULL
+    }
+    return(output)
+  }

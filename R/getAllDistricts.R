@@ -1,5 +1,5 @@
 ##' Get basic data on all districts
-##' 
+##'
 ##' This function is essentially a wrapper around District.getByOfficeState().
 ##' @usage getAllDistricts()
 ##' @return A data frame with a row for each district and columns with the following variables describing the district:\cr districtList.district*.districtId,\cr districtList.district*.name,\cr districtList.district*.officeId,\cr districtList.district*.stateId.
@@ -20,10 +20,8 @@
 
 getAllDistricts <-
   function() {
-    
     of <- getOffices()
     states <- State.getStateIDs()
-    
-    District.getByOfficeState(of$officeId, states$stateId, all=TRUE) 
-    
+
+    District.getByOfficeState(of$officeId, states$stateId, all = TRUE)
   }

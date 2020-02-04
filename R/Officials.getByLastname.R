@@ -1,5 +1,5 @@
 ##' Get a list of officials according to a last name match
-##' 
+##'
 ##' This function is a wrapper for the Officials.getByLastname() method of the PVS API Officials class which grabs a list of officials according to a last name match. The function sends a request with this method to the PVS API for all last names given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Officials.getByLastname(lastName)
 ##' @param lastName a character string or list of character strings with the last name(s) (see references for details)
@@ -18,29 +18,26 @@
 
 
 Officials.getByLastname <-
-	function (lastName) {
+  function(lastName) {
 
-		# internal function
-		Officials.getByLastname.basic <- 
-			function (.lastName) {
-				
-				request <-  "Officials.getByLastname?"
-				inputs  <-  paste("&lastName=",.lastName,sep="")
-				output  <-  pvsRequest4(request,inputs)
-				output$lastName <- .lastName
-				
-				return(output)
-				}
+    # internal function
+    Officials.getByLastname.basic <-
+      function(.lastName) {
+        request <- "Officials.getByLastname?"
+        inputs <- paste("&lastName=", .lastName, sep = "")
+        output <- pvsRequest4(request, inputs)
+        output$lastName <- .lastName
 
-		# Main function  
-		output.list <- lapply(lastName, FUN= function (y) {
-			Officials.getByLastname.basic(.lastName=y)
-		}
-		)
-		
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
+        return(output)
+      }
 
-		return(output)
-	}
+    # Main function
+    output.list <- lapply(lastName, FUN = function(y) {
+      Officials.getByLastname.basic(.lastName = y)
+    })
 
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

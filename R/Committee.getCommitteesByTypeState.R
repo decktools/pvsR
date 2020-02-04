@@ -1,5 +1,5 @@
 ##' Get a list of committees according to type and state
-##' 
+##'
 ##' This function is a wrapper for the Committee.getCommitteesByTypeState() method of the PVS API Committee class which returns a list of committees for each type in each requested state. The function sends a request with this method to the PVS API for all type and state IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Committee.getCommitteesByTypeState(typeId=list("H","S","J"), stateId="NA", all=FALSE)
 ##' @param typeId (optional) a character string or list of character strings with the type ID(s) (default: All) (see references for details)
@@ -18,7 +18,7 @@
 ##' \dontrun{committees <- Committee.getCommitteesByTypeState(typeId=list("H","S"),
 ##' stateId=list("NY","NJ"), all=TRUE)}
 ##' \dontrun{committees}
-##' # get a data frame of committees according to the exact type/state combinations 
+##' # get a data frame of committees according to the exact type/state combinations
 ##' # (i.e., "H"/"NY", "S"/"NJ")
 ##' \dontrun{committees <- Committee.getCommitteesByTypeState(typeId=list("H","S"),
 ##' stateId=list("NY","NJ"), all=FALSE)}
@@ -27,55 +27,51 @@
 
 
 Committee.getCommitteesByTypeState <-
-	function (typeId=list("H","S","J"), stateId="NA", all=FALSE) {
-		
-		if (!all) {
-			nstateId <- length(stateId) 
-			ntypeId <- length(typeId) 
-			samelength <- nstateId == ntypeId
-			
-			if (!samelength) {
-				stop(paste0("If all=FALSE, stateId and officeTypeId must have the same length.\n",
-							"stateId has length: ", nstateId, "\ntypeId has length: ", ntypeId))
-			}
-		}
-		
+  function(typeId = list("H", "S", "J"), stateId = "NA", all = FALSE) {
+    if (!all) {
+      nstateId <- length(stateId)
+      ntypeId <- length(typeId)
+      samelength <- nstateId == ntypeId
 
-		# internal function
-		Committee.getCommitteesByTypeState.basic <- 
-			function (.typeId, .stateId) {
-				
-				request <-  "Committee.getCommitteesByTypeState?"
-				inputs  <-  paste("&typeId=",.typeId,"&stateId=",.stateId,sep="")
-				output  <-  pvsRequest(request,inputs)
-				output$typeId <- .typeId
-				output$stateId <- .stateId
-				
-				return(output)
-		}  
+      if (!samelength) {
+        stop(paste0(
+          "If all=FALSE, stateId and officeTypeId must have the same length.\n",
+          "stateId has length: ", nstateId, "\ntypeId has length: ", ntypeId
+        ))
+      }
+    }
 
-		if (all==TRUE) {
 
-			# Main function  
-			output.list <- lapply(typeId, FUN= function (y) {
-				lapply(stateId, FUN= function (s) {
-					Committee.getCommitteesByTypeState.basic(.typeId=y, .stateId=s)
-				}
-				)
-			}
-			)
-			
-		} else {
-			# Main function  
-			reqdf <- data.frame(t=unlist(typeId), s=unlist(stateId), stringsAsFactors = FALSE)
-			output.list <- lapply(1:dim(reqdf)[1], FUN= function (l) {
-				Committee.getCommitteesByTypeState.basic(.typeId=reqdf[l,"t"], .stateId=reqdf[l,"s"])
-			})
-		}  
-		
-		output.list <- redlist(output.list)
-		output <- rbind_all(output.list)
-		
-		return(output)
-	}
+    # internal function
+    Committee.getCommitteesByTypeState.basic <-
+      function(.typeId, .stateId) {
+        request <- "Committee.getCommitteesByTypeState?"
+        inputs <- paste("&typeId=", .typeId, "&stateId=", .stateId, sep = "")
+        output <- pvsRequest(request, inputs)
+        output$typeId <- .typeId
+        output$stateId <- .stateId
 
+        return(output)
+      }
+
+    if (all == TRUE) {
+
+      # Main function
+      output.list <- lapply(typeId, FUN = function(y) {
+        lapply(stateId, FUN = function(s) {
+          Committee.getCommitteesByTypeState.basic(.typeId = y, .stateId = s)
+        })
+      })
+    } else {
+      # Main function
+      reqdf <- data.frame(t = unlist(typeId), s = unlist(stateId), stringsAsFactors = FALSE)
+      output.list <- lapply(1:dim(reqdf)[1], FUN = function(l) {
+        Committee.getCommitteesByTypeState.basic(.typeId = reqdf[l, "t"], .stateId = reqdf[l, "s"])
+      })
+    }
+
+    output.list <- redlist(output.list)
+    output <- rbind_all(output.list)
+
+    return(output)
+  }

@@ -1,5 +1,5 @@
 ##' Get a list of categories that contain released bills according to year and state
-##' 
+##'
 ##' This function is a wrapper for the Votes.getCategories() method of the PVS API Votes class which dumps categories that contain released bills according to year and state. The function sends a request with this method to the PVS API for all years and state IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Votes.getCategories(year, stateId="NA")
 ##' @param year a character string or list of character strings with the year(s)
@@ -20,31 +20,27 @@
 
 
 Votes.getCategories <-
-	function (year, stateId="NA") {
+  function(year, stateId = "NA") {
 
-		# internal function
-		Votes.getCategories.basic <- 
-			function (.year, .stateId) {
+    # internal function
+    Votes.getCategories.basic <-
+      function(.year, .stateId) {
+        request <- "Votes.getCategories?"
+        inputs <- paste("&year=", .year, "&stateId=", .stateId, sep = "")
+        output <- pvsRequest(request, inputs)
+        output$year <- .year
+        output$stateId <- .stateId
+        return(output)
+      }
 
-				request <-  "Votes.getCategories?"
-				inputs  <-  paste("&year=",.year,"&stateId=",.stateId,sep="")
-				output  <-  pvsRequest(request,inputs)
-				output$year <-.year
-				output$stateId <- .stateId
-				return(output)
-			}
-		
-		#Main function
-		output.list <- lapply(year, FUN= function (y) {
-			lapply(stateId, FUN= function (s) {
-				Votes.getCategories.basic(.year=y, .stateId=s)
-			}
-			)
-		}
-		)
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
-		
-		return(output)
-		
-		}
+    # Main function
+    output.list <- lapply(year, FUN = function(y) {
+      lapply(stateId, FUN = function(s) {
+        Votes.getCategories.basic(.year = y, .stateId = s)
+      })
+    })
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

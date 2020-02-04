@@ -1,5 +1,5 @@
 ##' Get a list of officials according to the district they are running for
-##' 
+##'
 ##' This function is a wrapper for the Officials.getByDistrict() method of the PVS API Officials class which grabs a list of officials according to the district they are running for. The function sends a request with this method to the PVS API for all district IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Officials.getByDistrict(districtId)
 ##' @param districtId a character string or list of character strings with the district ID(s) (see references for details)
@@ -18,25 +18,23 @@
 
 
 Officials.getByDistrict <-
-	function (districtId) {
+  function(districtId) {
 
-		# internal function
-		Officials.getByDistrict.basic <- function (.districtId) {
-			request <-  "Officials.getByDistrict?"
-			inputs  <-  paste("&districtId=",.districtId,sep="")
-			output  <-  pvsRequest4(request,inputs)
-			output
-		}
+    # internal function
+    Officials.getByDistrict.basic <- function(.districtId) {
+      request <- "Officials.getByDistrict?"
+      inputs <- paste("&districtId=", .districtId, sep = "")
+      output <- pvsRequest4(request, inputs)
+      output
+    }
 
-		# Main function  
-		output.list <- lapply(districtId, FUN= function (y) {
-			Officials.getByDistrict.basic(.districtId=y)
-		}
-		)
+    # Main function
+    output.list <- lapply(districtId, FUN = function(y) {
+      Officials.getByDistrict.basic(.districtId = y)
+    })
 
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
 
-		return(output)
-	}
-
+    return(output)
+  }

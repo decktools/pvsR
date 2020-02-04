@@ -1,5 +1,5 @@
 ##' Get a list of bills according to sponsor(candidate) and category
-##' 
+##'
 ##' This function is a wrapper for the Votes.getBillsBySponsorCategory() method of the PVS API Votes class which grabs a list of bills that fit the sponsor's candidateId and category. The function sends a request with this method to the PVS API for all candidate and category IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Votes.getBillsBySponsorCategory(categoryId, candidateId)
 ##' @param categoryId a character string or list of character strings with the category ID(s) (see references for details)
@@ -20,30 +20,28 @@
 
 
 Votes.getBillsBySponsorCategory <-
-	function (categoryId, candidateId) {
+  function(categoryId, candidateId) {
 
-		# internal function
-		Votes.getBillsBySponsorCategory.basic <- 
-			function (.categoryId, .candidateId) {
-				request <-  "Votes.getBillsBySponsorCategory?"
-				inputs  <-  paste("&categoryId=",.categoryId,"&candidateId=",.candidateId,sep="")
-				output  <-  pvsRequest(request,inputs)
-				output$categoryId <- .categoryId
-				output$candidateId <- .candidateId
-				
-				return(output)
-			}
+    # internal function
+    Votes.getBillsBySponsorCategory.basic <-
+      function(.categoryId, .candidateId) {
+        request <- "Votes.getBillsBySponsorCategory?"
+        inputs <- paste("&categoryId=", .categoryId, "&candidateId=", .candidateId, sep = "")
+        output <- pvsRequest(request, inputs)
+        output$categoryId <- .categoryId
+        output$candidateId <- .candidateId
 
-		# Main function  
-		output.list <- lapply(categoryId, FUN= function (y) {
-			lapply(candidateId, FUN= function (s) {
-				Votes.getBillsBySponsorCategory.basic(.categoryId=y, .candidateId=s)
-			}
-			)
-		}
-		)
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
+        return(output)
+      }
 
-		return(output)
-	}
+    # Main function
+    output.list <- lapply(categoryId, FUN = function(y) {
+      lapply(candidateId, FUN = function(s) {
+        Votes.getBillsBySponsorCategory.basic(.categoryId = y, .candidateId = s)
+      })
+    })
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }

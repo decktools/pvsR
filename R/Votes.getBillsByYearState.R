@@ -1,5 +1,5 @@
 ##' Get a list of bills according to year and state
-##' 
+##'
 ##' This function is a wrapper for the Votes.getBillsByYearState() method of the PVS API Votes class which returns a list of bills that fit the year and state input. The function sends a request with this method to the PVS API for all years and state IDs given as a function input, extracts the XML values from the returned XML file(s) and returns them arranged in one data frame.
 ##' @usage Votes.getBillsByYearState(year, stateId, all=FALSE)
 ##' @param year a character string or list of character strings with the year(s)
@@ -18,7 +18,7 @@
 ##' \dontrun{bills <- Votes.getBillsByYearState(year=list(2011,2012),
 ##' stateId=list("NY","NJ"), all=TRUE)}
 ##' \dontrun{head(bills)}
-##' # get a data frame of bills according to the exact year and state combinations 
+##' # get a data frame of bills according to the exact year and state combinations
 ##' # (i.e., 2011/"NY", 2012/"NJ")
 ##' \dontrun{bills <- Votes.getBillsByYearState(year=list(2011,2012),
 ##' stateId=list("NY","NJ"), all=FALSE)}
@@ -27,43 +27,38 @@
 
 
 
-Votes.getBillsByYearState <- 
-	function (year, stateId, all=FALSE) {
-		# internal function
-		Votes.getBillsByYearState.basic <- 
-			function (.year, .stateId) {
-				
-				request <-  "Votes.getBillsByYearState?"
-				inputs  <-  paste("&year=",.year,"&stateId=",.stateId,sep="")
-				output  <-  pvsRequest4(request,inputs)
-				output$year <- .year
-				output$stateId <- .stateId
-				
-				return(output)
-			}
-		
-		if (all==TRUE) {
-			
-			# Main function  
-			output.list <- lapply(year, FUN= function (y) {
-				lapply(stateId, FUN= function (s) {
-					Votes.getBillsByYearState.basic(.year=y, .stateId=s)
-				}
-				)
-			}
-			)
-			
-			
-		} else {
-			# Main function  
-			reqdf <- data.frame(y=unlist(year), s=unlist(stateId))
-			output.list <- lapply(1:dim(reqdf)[1], FUN= function (l) {
-				Votes.getBillsByYearState.basic(.year=reqdf[l,"y"], .stateId=reqdf[l,"s"])
-			})
-		}  
-		
-		output.list <- redlist(output.list)
-		output <- bind_rows(output.list)
-		
-		return(output)
-	}
+Votes.getBillsByYearState <-
+  function(year, stateId, all = FALSE) {
+    # internal function
+    Votes.getBillsByYearState.basic <-
+      function(.year, .stateId) {
+        request <- "Votes.getBillsByYearState?"
+        inputs <- paste("&year=", .year, "&stateId=", .stateId, sep = "")
+        output <- pvsRequest4(request, inputs)
+        output$year <- .year
+        output$stateId <- .stateId
+
+        return(output)
+      }
+
+    if (all == TRUE) {
+
+      # Main function
+      output.list <- lapply(year, FUN = function(y) {
+        lapply(stateId, FUN = function(s) {
+          Votes.getBillsByYearState.basic(.year = y, .stateId = s)
+        })
+      })
+    } else {
+      # Main function
+      reqdf <- data.frame(y = unlist(year), s = unlist(stateId))
+      output.list <- lapply(1:dim(reqdf)[1], FUN = function(l) {
+        Votes.getBillsByYearState.basic(.year = reqdf[l, "y"], .stateId = reqdf[l, "s"])
+      })
+    }
+
+    output.list <- redlist(output.list)
+    output <- bind_rows(output.list)
+
+    return(output)
+  }
