@@ -62,8 +62,6 @@ candidates_get_by_office_state <- function(state_ids = NA,
       )
   }
   
-  
-  
   out <- tibble()
   
   for (i in 1:nrow(query_df)) {
