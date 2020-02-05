@@ -1,4 +1,22 @@
 
+construct_funs <- function(tbl = endpoint_input_mapping_nested) {
+  
+  inputs <- endpoint_input_mapping_nested[1,] %>% 
+    tidyr::unnest(inputs) %>% 
+    pull(input) 
+  
+  eval(
+    parse(
+      text = 
+        dev.glue(
+          "{endpoint_input_mapping_nested$endpoint[1]} <- function({inputs}) {{'foo'}}"
+        )
+    )
+  )
+  
+  Address.getCampaign()
+}
+
 
 grab_data <- function(tbl = endpoint_input_mapping_nested, endpt, ...) {
   

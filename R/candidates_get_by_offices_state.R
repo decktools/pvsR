@@ -65,6 +65,12 @@ candidates_get_by_office_state <- function(state_ids = NA,
   out <- tibble()
   
   for (i in 1:nrow(query_df)) {
+    if (verbose) {
+      dev.glue_message(
+        "Requesting data for {{state_id: {state_id}, office_id: {office_id}, election_year: {election_year}}}."
+      )
+    }
+    
     q <- query_df$query[i]
     state_id <- query_df$state_id[i]
     office_id <- query_df$office_id[i]
@@ -81,7 +87,7 @@ candidates_get_by_office_state <- function(state_ids = NA,
     if (is.null(lst)) {
       if (verbose) {
         dev.glue_message(
-          "No results found for {{state_id: {state_id}, office_id: {office_id}, election_year: {election_year}}}."
+          "No results found for query {q}."
         )
       }
       
