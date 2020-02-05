@@ -3,6 +3,7 @@
 #' @param state_ids Optional: vector of state abbreviations. Default is \code{NA}, for national elections.
 #' @param office_ids Required: vector of office ids that candidates hold. See \link{\code{Office.getLevels}} and \link{\code{Office.getOfficesByLevel}} for office ids.
 #' @param election_years Optional: vector of election years in which the candidate held office. Default is the current year.
+#' @param all Boolean: should all possible combinations of the variables be searched for, or just the exact combination of them in the order they are supplied?
 #' @param verbose Should cases when no data is available be messaged?
 #'
 #' @return A dataframe of candidates and their attributes. If a given \code{state_id} + \code{office_id} + \code{election_year} combination returns no data, that row will be filled with \code{NA}s.
@@ -15,6 +16,7 @@
 candidates_get_by_office_state <- function(state_ids = NA,
                                            office_ids, 
                                            election_years = lubridate::year(lubridate::today()), 
+                                           all = TRUE,
                                            verbose = TRUE) {
   req <- "Candidates.getByOfficeState?"
   
@@ -25,18 +27,42 @@ candidates_get_by_office_state <- function(state_ids = NA,
   election_years %<>% 
     as_char_vec()
   
-  query_df <- 
-    expand.grid(
-      state_id = state_ids, 
-      office_id = office_ids,
-      election_year = election_years
-    ) %>%
-    mutate(
-      query = 
-        dev.glue(
-          "&stateId={state_id}&officeId={office_id}&electionYear={election_year}"
+  if (all) {
+    query_df <- 
+      expand.grid(
+        state_id = state_ids, 
+        office_id = office_ids,
+        election_year = election_years
+      ) %>%
+      mutate(
+        query = 
+          dev.glue(
+            "&stateId={state_id}&officeId={office_id}&electionYear={election_year}"
           )
-    ) 
+      ) 
+  } else {
+    length_state_ids <- length(state_ids)
+    length_office_ids <- length(office_ids)
+    length_election_years <- length(election_years)
+    lengths <- 
+      c(length_state_ids, length_office_ids, length_election_years) %>% 
+      magrittr::extract(
+        ! . == 1
+      )
+    
+    if (!identical(lengths)) {
+      stop("If `all` is TRUE, lengths of inputs must be equivalent to each other, or 1.")
+    }
+    
+    query_df <- 
+      tibble(
+        state_id = state_ids, 
+        office_id = office_ids,
+        election_year = election_years
+      )
+  }
+  
+  
   
   out <- tibble()
   
