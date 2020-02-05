@@ -1,8 +1,10 @@
+# Create a mapping between each endpoint and its available inputs
 
-url <- "http://api.votesmart.org/docs/"
+base_url <- "http://api.votesmart.org/docs/"
 
+# Grab the base_endpoints, which we'll use to get each base_endpoint's doc page with {base_url}{base_endpoint}.html 
 raw <- 
-  url %>% 
+  base_url %>% 
   xml2::read_html() %>% 
   rvest::html_nodes("#menu") %>% 
   rvest::html_text()
@@ -32,17 +34,19 @@ base_endpoints <-
   dev.glue("{capitals}{lowercase}") %>% 
   stringr::str_squish() %>% 
   magrittr::extract(
-    !. %in% c("Ballot", "Candidate")  # this is covered by Measure
+    !. %in% c("Ballot", "Candidate")  # Ballot is covered by Measure and Candidate is covered by CandidateBio
   )
 
 base_endpoints[which(base_endpoints == "Bio")] <- "CandidateBio"
 
+# Construct each doc page to scrape
 pages_tbl <- 
   tibble(
     base_endpoint = base_endpoints,
-    url = dev.glue("{url}{base_endpoint}.html")
+    url = dev.glue("{base_url}{base_endpoint}.html")
   )
   
+# Grab each endpoint and the possible inputs to it
 get_endpoints <- function(tbl = pages_tbl) {
   
   out <- tibble()
@@ -75,22 +79,35 @@ get_endpoints <- function(tbl = pages_tbl) {
       .[2:length(.)] %>% 
       # May want to store the defaults which are in parens somewhere
       stringr::str_remove_all("\\(.*") %>% 
-      stringr::str_remove_all("[: \\*]") %>% 
+      stringr::str_remove_all("[: ]") %>% 
       stringr::str_split(",")
     
     this <- 
       tibble(
         endpoint = endpoints,
-        inputs = inputs
+        input = inputs
       ) %>% 
-      tidyr::unnest(inputs)
+      tidyr::unnest(input)
     
     out %<>% 
       bind_rows(this)
   }
-  out
+  out %>% 
+    mutate(
+      required = case_when(
+        stringr::str_detect(
+          input, "\\*"
+        ) ~ TRUE,
+        TRUE ~ FALSE
+      ),
+      input = stringr::str_remove(input, "\\*")
+    ) %>% 
+    na_if("none")
 } 
 
 endpoint_input_mapping <- get_endpoints()
 
-
+# One row per endpoint
+endpoint_input_mapping_nested <- 
+  endpoint_input_mapping %>% 
+  tidyr::nest(inputs = c(input, required))
